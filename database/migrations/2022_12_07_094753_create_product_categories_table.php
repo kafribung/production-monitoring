@@ -13,16 +13,19 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('reference.product_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->string('phone', 15)->nullable()->unique();
-            $table->text('address')->nullable();
-            $table->set('role', ['super_admin', 'admin', 'customer'])->default('customer');
-            $table->rememberToken();
+
+            $table->foreignId('created_by')
+                ->constrained('users')
+                ->cascadeOnUpdate()
+                ->nullOnDelete();
+            $table->foreignId('updated_by')
+                ->nullable()
+                ->constrained('users')
+                ->cascadeOnUpdate()
+                ->nullOnDelete();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -35,6 +38,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('product_categories');
     }
 };
