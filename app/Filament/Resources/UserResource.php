@@ -3,9 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
-use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -24,16 +22,45 @@ class UserResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                //
-            ]);
+            ->schema([]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')
+                    ->sortable()
+                    ->searchable()
+                    ->size('sm'),
+                Tables\Columns\TextColumn::make('email')
+                    ->sortable()
+                    ->searchable()
+                    // ->extraAttributes(['class' => 'font-medium'])
+                    ->weight('medium')
+                    ->copyable()
+                    ->copyMessage('Email address copied')
+                    ->copyMessageDuration(1500)
+                    ->description(fn (User $record): string => $record->role),
+                Tables\Columns\TextColumn::make('phone')
+                    ->searchable(),
+                Tables\Columns\BadgeColumn::make('email_verified_at')
+                    ->label('Status')
+                    ->formatStateUsing(fn ($state) => $state != null ? 'aktif' : 'belum aktif')
+                    ->colors([
+                        'success' => static fn ($state): bool => $state != null,
+                        'danger' => static fn ($state): bool => $state == null,
+                    ]),
+                Tables\Columns\TextColumn::make('address')
+                    ->limit(20)
+                    ->tooltip(function (Tables\Columns\TextColumn $column): ?string {
+                        $state = $column->getState();
+                        if (strlen($state) <= $column->getLimit()) {
+                            return null;
+                        }
+                        // Only render the tooltip if the column contents exceeds the length limit.
+                        return $state;
+                    }),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -42,7 +69,7 @@ class UserResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                // Tables\Actions\DeleteBulkAction::make(),
                 Tables\Actions\ForceDeleteBulkAction::make(),
                 Tables\Actions\RestoreBulkAction::make(),
             ]);
