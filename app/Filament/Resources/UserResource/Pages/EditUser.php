@@ -18,4 +18,12 @@ class EditUser extends EditRecord
             Actions\RestoreAction::make(),
         ];
     }
+
+    // protected function mutateFormDataBeforeFill(array $data): array
+    // {
+    //     dd($data);
+    //     $data['role'] = 'admin';
+
+    //     return $data;
+    // }
 }

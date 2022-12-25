@@ -4,12 +4,14 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
+use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
@@ -22,7 +24,39 @@ class UserResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([]);
+            ->schema([
+                Forms\Components\Grid::make()
+                    ->schema([
+                        Forms\Components\Card::make()
+                            ->schema([
+                                Forms\Components\TextInput::make('name')
+                                    ->autofocus()
+                                    ->disableAutocomplete()
+                                    ->required(),
+                                Forms\Components\TextInput::make('email')
+                                    ->required()
+                                    ->email()
+                                    ->disableAutocomplete()
+                                    ->helperText('Email must be unique')
+                                    ->unique(ignoreRecord: true),
+                                Forms\Components\TextInput::make('password')
+                                    ->required(fn (string $context): bool => $context === 'create')
+                                    ->password()
+                                    ->disableAutocomplete()
+                                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                                    ->dehydrated(fn ($state) => filled($state)),
+                                Forms\Components\TextInput::make('phone')
+                                    ->required()
+                                    ->tel()
+                                    ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/')
+                                    ->disableAutocomplete()
+                                    ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask->pattern('+{62} 0000000000000')),
+                                Forms\Components\Textarea::make('address')
+                                    ->required(),
+                            ])
+                            ->columns(2),
+                    ]),
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -36,14 +70,14 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->sortable()
                     ->searchable()
-                    // ->extraAttributes(['class' => 'font-medium'])
                     ->weight('medium')
                     ->copyable()
                     ->copyMessage('Email address copied')
                     ->copyMessageDuration(1500)
                     ->description(fn (User $record): string => $record->role),
                 Tables\Columns\TextColumn::make('phone')
-                    ->searchable(),
+                    ->searchable()
+                    ->default('-'),
                 Tables\Columns\BadgeColumn::make('email_verified_at')
                     ->label('Status')
                     ->formatStateUsing(fn ($state) => $state != null ? 'aktif' : 'belum aktif')
@@ -63,16 +97,50 @@ class UserResource extends Resource
                     }),
             ])
             ->filters([
-                Tables\Filters\TrashedFilter::make(),
+                // Tables\Filters\TrashedFilter::make(),
+                Tables\Filters\TernaryFilter::make('email_verified_at')
+                    ->placeholder('Status')
+                    ->trueLabel('With status aktif')
+                    ->falseLabel('Only status nonaktif')
+                    ->nullable(),
+                Tables\Filters\SelectFilter::make('role')
+                    ->options([
+                        'super_admin' => 'Super admin',
+                        'admin' => 'Admin',
+                        'customer' => 'Customer',
+                    ]),
+                Tables\Filters\TernaryFilter::make('trashed')
+                    ->placeholder('Without trashed records')
+                    ->trueLabel('With trashed records')
+                    ->falseLabel('Only trashed records')
+                    ->queries(
+                        true: fn (Builder $query) => $query->withTrashed(),
+                        false: fn (Builder $query) => $query->onlyTrashed(),
+                        blank: fn (Builder $query) => $query->withoutTrashed(),
+                    ),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make()
+                        ->hidden(fn () => auth()->user()->role == 'admin'),
+                    Tables\Actions\Action::make('activated')
+                        ->label(fn (User $record) => $record->email_verified_at == null ? 'Activated' : 'Unactivated')
+                        ->action(fn (User $record) => $record->activated())
+                        ->requiresConfirmation()
+                        ->color(fn (User $record) => $record->email_verified_at == null ? 'success' : 'danger')
+                        ->icon('heroicon-o-key')
+                        ->button(),
+                ]),
             ])
             ->bulkActions([
-                // Tables\Actions\DeleteBulkAction::make(),
-                Tables\Actions\ForceDeleteBulkAction::make(),
-                Tables\Actions\RestoreBulkAction::make(),
-            ]);
+                Tables\Actions\DeleteBulkAction::make()
+                    ->hidden(fn () => auth()->user()->role == 'admin'),
+                // Tables\Actions\ForceDeleteBulkAction::make()
+                //     ->hidden(fn () => auth()->user()->role == 'admin'),
+                Tables\Actions\RestoreBulkAction::make()
+                    ->hidden(fn () => auth()->user()->role == 'admin'),
+            ])
+            ->defaultSort('created_at');
     }
 
     public static function getRelations(): array
