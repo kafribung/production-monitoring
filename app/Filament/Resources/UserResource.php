@@ -5,12 +5,16 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Resources\{
+    Form,
+    Resource,
+    Table
+};
 use Filament\Tables;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Database\Eloquent\{
+    Builder,
+    SoftDeletingScope,
+};
 use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
@@ -52,7 +56,8 @@ class UserResource extends Resource
                                     ->disableAutocomplete()
                                     ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask->pattern('+{62} 0000000000000')),
                                 Forms\Components\Textarea::make('address')
-                                    ->required(),
+                                    ->required()
+                                    ->columnSpan('full'),
                             ])
                             ->columns(2),
                     ]),
@@ -139,8 +144,7 @@ class UserResource extends Resource
                 //     ->hidden(fn () => auth()->user()->role == 'admin'),
                 Tables\Actions\RestoreBulkAction::make()
                     ->hidden(fn () => auth()->user()->role == 'admin'),
-            ])
-            ->defaultSort('created_at');
+            ]);
     }
 
     public static function getRelations(): array
@@ -164,6 +168,7 @@ class UserResource extends Resource
         return parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
-            ]);
+            ])
+            ->latest('updated_at');
     }
 }

@@ -35,5 +35,9 @@ class DatabaseSeeder extends Seeder
                 ['role' => 'customer'],
             ))
             ->create();
+
+        $this->call([
+            ProductMaterialSeeder::class,
+        ]);
     }
 }
