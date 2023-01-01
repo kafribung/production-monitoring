@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
@@ -38,6 +36,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             ProductMaterialSeeder::class,
+            ProductColorSeeder::class,
         ]);
     }
 }

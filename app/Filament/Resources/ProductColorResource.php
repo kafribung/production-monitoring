@@ -2,24 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProductMaterialResource\Pages;
-use App\Models\ProductMaterial;
+use App\Filament\Resources\ProductColorResource\Pages;
+use App\Models\ProductColor;
 use Filament\Forms;
-use Filament\Resources\{
-    Form,
-    Resource,
-    Table
-};
+use Filament\Resources\Form;
+use Filament\Resources\Resource;
+use Filament\Resources\Table;
 use Filament\Tables;
-use Illuminate\Database\Eloquent\{
-    Builder,
-};
 
-class ProductMaterialResource extends Resource
+class ProductColorResource extends Resource
 {
-    protected static ?string $model = ProductMaterial::class;
+    protected static ?string $model = ProductColor::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-puzzle';
+    protected static ?string $navigationIcon = 'heroicon-o-color-swatch';
 
     protected static ?string $navigationGroup = 'Produk';
 
@@ -42,10 +37,10 @@ class ProductMaterialResource extends Resource
                             ->schema([
                                 Forms\Components\Placeholder::make('created_at')
                                     ->label('Created at')
-                                    ->content(fn (?ProductMaterial $record): string => $record && $record->created_at ? $record->created_at->diffForHumans() : '-'),
+                                    ->content(fn (?ProductColor $record): string => $record && $record->created_at ? $record->created_at->diffForHumans() : '-'),
                                 Forms\Components\Placeholder::make('updated_at')
                                     ->label('Last modified at')
-                                    ->content(fn (?ProductMaterial $record): string => $record && $record->updated_at ? $record->updated_at->diffForHumans() : '-'),
+                                    ->content(fn (?ProductColor $record): string => $record && $record->updated_at ? $record->updated_at->diffForHumans() : '-'),
                             ])
                             ->columnSpan(1),
                     ]),
@@ -85,15 +80,9 @@ class ProductMaterialResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProductMaterials::route('/'),
-            'create' => Pages\CreateProductMaterial::route('/create'),
-            'edit' => Pages\EditProductMaterial::route('/{record}/edit'),
+            'index' => Pages\ListProductColors::route('/'),
+            'create' => Pages\CreateProductColor::route('/create'),
+            'edit' => Pages\EditProductColor::route('/{record}/edit'),
         ];
-    }
-
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            ->latest('updated_at');
     }
 }
