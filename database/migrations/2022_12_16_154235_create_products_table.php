@@ -18,13 +18,11 @@ return new class() extends Migration
             $table->string('name');
             $table->integer('price');
             $table->smallInteger('stock_first');
-            $table->smallInteger('stock_last');
+            $table->smallInteger('stock_last')->nullable();
             $table->text('description');
             $table->foreignId('product_material_id')->constrained()->cascadeOnUpdate()->restrictOnDelete();
             $table->foreignId('product_category_id')->constrained()->cascadeOnUpdate()->restrictOnDelete();
-            $table->foreignId('product_color_id')->constrained()->cascadeOnUpdate()->restrictOnDelete();
-            $table->foreignId('product_size_id')->constrained()->cascadeOnUpdate()->restrictOnDelete();
-            $table->string('slug')->unique();
+            $table->string('slug')->index()->unique();
 
             $table->foreignId('created_by')
                 ->constrained('users')

@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
+use Closure;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -12,6 +13,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class ProductResource extends Resource
 {
@@ -25,7 +27,113 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Grid::make(3)
+                    ->schema([
+                        Forms\Components\Card::make()
+                            ->schema([
+                                Forms\Components\TextInput::make('name')
+                                    ->autofocus()
+                                    ->disableAutocomplete()
+                                    ->required()
+                                    ->reactive()
+                                    ->afterStateUpdated(function (Closure $set, $state) {
+                                        $set('slug', Str::slug($state, '-'));
+                                    })
+                                    ->unique(ignoreRecord: true),
+                                Forms\Components\TextInput::make('slug')
+                                    ->disabled(),
+                                Forms\Components\TextInput::make('price')
+                                    ->required()
+                                    ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask->money(prefix: 'Rp.', thousandsSeparator: ',', decimalPlaces: 2, isSigned: false))
+                                    ->columnSpanFull(),
+                                Forms\Components\MarkdownEditor::make('description')
+                                    ->required()
+                                    ->disableToolbarButtons([
+                                        'attachFiles',
+                                        'codeBlock',
+                                        'link',
+                                        'strike',
+                                    ])
+                                    ->columnSpanFull()
+                            ])
+                            ->columns(2)
+                            ->columnSpan(2),
+
+                        Forms\Components\Section::make('Inventory')
+                            ->schema([
+                                Forms\Components\TextInput::make('stock_first')
+                                    ->required()
+                                    ->numeric()
+                                    ->mask(
+                                        fn (Forms\Components\TextInput\Mask $mask) => $mask
+                                            ->minValue(1) // Set the minimum value that the number can be.
+                                            ->maxValue(900) // Set the maximum value that the number can be.
+                                            ->numeric()
+                                    )
+                            ])
+                            ->columnSpan(1),
+
+                        // Forms\Components\Card::make()
+                        //     ->schema([
+                        //         Forms\Components\TextInput::make('name')
+                        //             ->autofocus()
+                        //             ->disableAutocomplete()
+                        //             ->required()
+                        //             ->reactive()
+                        //             ->afterStateUpdated(function (Closure $set, $state) {
+                        //                 $set('slug', Str::slug($state, '-'));
+                        //             })
+                        //             ->unique(ignoreRecord: true),
+                        //         Forms\Components\TextInput::make('slug')
+                        //             ->disabled(),
+                        //         Forms\Components\TextInput::make('price')
+                        //             ->required()
+                        //             ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask->money(prefix: 'Rp.', thousandsSeparator: ',', decimalPlaces: 2, isSigned: false))
+                        //             ->columnSpanFull(),
+                        //         Forms\Components\MarkdownEditor::make('description')
+                        //             ->required()
+                        //             ->disableToolbarButtons([
+                        //                 'attachFiles',
+                        //                 'codeBlock',
+                        //                 'link',
+                        //                 'strike',
+                        //             ])
+                        //             ->columnSpanFull()
+                        //     ])
+                        //     ->columns(2)
+                        //     ->columnSpan(2),
+
+                        Forms\Components\Section::make('Associations')
+                            ->extraAttributes(['class' => 'row-span-4'])
+                            ->schema([
+                                Forms\Components\Select::make('product_material_id')
+                                    ->required()
+                                    ->relationship('meterial', 'name'),
+                                Forms\Components\Select::make('product_category_id')
+                                    ->required()
+                                    ->relationship('category', 'name'),
+                                Forms\Components\CheckboxList::make('colors')
+                                    ->required()
+                                    ->bulkToggleable()
+                                    ->relationship('colors', 'name'),
+                                Forms\Components\CheckboxList::make('sizes')
+                                    ->required()
+                                    ->bulkToggleable()
+                                    ->columns(3)
+                                    ->relationship('sizes', 'name'),
+                            ])
+                            ->columnSpan(1),
+                        Forms\Components\Card::make()
+                            ->schema([
+                                Forms\Components\Placeholder::make('created_at')
+                                    ->label('Created at')
+                                    ->content(fn (?Product $record): string => $record && $record->created_at ? $record->created_at->diffForHumans() : '-'),
+                                Forms\Components\Placeholder::make('updated_at')
+                                    ->label('Last modified at')
+                                    ->content(fn (?Product $record): string => $record && $record->updated_at ? $record->updated_at->diffForHumans() : '-'),
+                            ])
+                            ->columnSpan(1),
+                    ]),
             ]);
     }
 

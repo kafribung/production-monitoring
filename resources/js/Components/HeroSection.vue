@@ -1,6 +1,7 @@
 <script setup>
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { Link } from "@inertiajs/inertia-vue3";
 
 const navigation = [
     { name: 'Kemeja', href: '#' },
@@ -40,9 +41,10 @@ const navigation = [
                                 </div>
                             </div>
                             <div class="hidden md:ml-10 md:block md:space-x-8 md:pr-4">
-                                <a v-for="item in navigation" :key="item.name" :href="item.href"
-                                    class="font-medium text-gray-500 hover:text-gray-900">{{ item.name }}</a>
-                                <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">Log in</a>
+                                <Link v-for="item in navigation" :key="item.name" :href="item.href"
+                                    class="font-medium text-gray-500 hover:text-gray-900">{{ item.name }}</Link>
+                                <Link :href="route('login')" class="font-medium text-indigo-600 hover:text-indigo-500">
+                                Log in</Link>
                             </div>
                         </nav>
                     </div>
@@ -68,14 +70,15 @@ const navigation = [
                                     </div>
                                 </div>
                                 <div class="space-y-1 px-2 pt-2 pb-3">
-                                    <a v-for="item in navigation" :key="item.name" :href="item.href"
-                                        class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900">{{
-                                                item.name
-                                        }}</a>
+                                    <Link v-for="item in navigation" :key="item.name" :href="item.href"
+                                        class="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900">
+                                    {{
+                                        item.name
+                                    }}</Link>
                                 </div>
-                                <a href="#"
-                                    class="block w-full bg-gray-50 px-5 py-3 text-center font-medium text-indigo-600 hover:bg-gray-100">Log
-                                    in</a>
+                                <Link :href="route('login')"
+                                    class="block w-full bg-gray-50 px-5 py-3 text-center font-medium text-indigo-600 hover:bg-gray-100">
+                                Log in sapi</Link>
                             </div>
                         </PopoverPanel>
                     </transition>
