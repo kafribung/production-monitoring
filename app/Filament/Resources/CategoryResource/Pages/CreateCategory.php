@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Filament\Resources\ProductResource\Pages;
+namespace App\Filament\Resources\CategoryResource\Pages;
 
-use App\Filament\Resources\ProductResource;
+use App\Filament\Resources\CategoryResource;
 use Filament\Resources\Pages\CreateRecord;
 
-class CreateProduct extends CreateRecord
+class CreateCategory extends CreateRecord
 {
-    protected static string $resource = ProductResource::class;
+    protected static string $resource = CategoryResource::class;
 
     protected function getRedirectUrl(): string
     {

@@ -12,10 +12,9 @@ return new class () extends Migration {
      */
     public function up()
     {
-        Schema::create('color_product', function (Blueprint $table) {
-            $table->id();
+        Schema::create('product_size', function (Blueprint $table) {
             $table->foreignId('product_id')->constrained();
-            $table->foreignId('color_id')->constrained();
+            $table->foreignId('size_id')->constrained();
         });
     }
 
@@ -26,6 +25,6 @@ return new class () extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('color_product');
+        Schema::dropIfExists('product_size');
     }
 };

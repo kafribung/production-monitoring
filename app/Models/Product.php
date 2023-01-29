@@ -20,21 +20,21 @@ class Product extends Model
 
     public function meterial()
     {
-        return $this->belongsTo(ProductMaterial::class, 'product_material_id');
+        return $this->belongsTo(Material::class, 'material_id');
     }
 
     public function category()
     {
-        return $this->belongsTo(ProductCategory::class, 'product_category_id');
+        return $this->belongsTo(Category::class, 'category_id');
     }
 
     public function colors()
     {
-        return $this->belongsToMany(ProductColor::class, 'color_id');
+        return $this->belongsToMany(Color::class);
     }
 
     public function sizes()
     {
-        return $this->belongsToMany(ProductSize::class);
+        return $this->belongsToMany(Size::class);
     }
 }

@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\ProductResource\Pages;
+namespace App\Filament\Resources\ColorResource\Pages;
 
-use App\Filament\Resources\ProductResource;
+use App\Filament\Resources\ColorResource;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditProduct extends EditRecord
+class EditColor extends EditRecord
 {
-    protected static string $resource = ProductResource::class;
+    protected static string $resource = ColorResource::class;
 
     protected function getActions(): array
     {

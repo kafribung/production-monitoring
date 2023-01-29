@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
 use Closure;
 use Filament\Forms;
@@ -11,8 +10,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 use Illuminate\Support\Str;
 
 class ProductResource extends Resource
@@ -44,6 +42,7 @@ class ProductResource extends Resource
                                     ->disabled(),
                                 Forms\Components\TextInput::make('price')
                                     ->required()
+                                    ->disableAutocomplete()
                                     ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask->money(prefix: 'Rp.', thousandsSeparator: ',', decimalPlaces: 2, isSigned: false))
                                     ->columnSpanFull(),
                                 Forms\Components\MarkdownEditor::make('description')
@@ -64,6 +63,7 @@ class ProductResource extends Resource
                                 Forms\Components\TextInput::make('stock_first')
                                     ->required()
                                     ->numeric()
+                                    ->disableAutocomplete()
                                     ->mask(
                                         fn (Forms\Components\TextInput\Mask $mask) => $mask
                                             ->minValue(1) // Set the minimum value that the number can be.
@@ -72,46 +72,15 @@ class ProductResource extends Resource
                                     )
                             ])
                             ->columnSpan(1),
-
-                        // Forms\Components\Card::make()
-                        //     ->schema([
-                        //         Forms\Components\TextInput::make('name')
-                        //             ->autofocus()
-                        //             ->disableAutocomplete()
-                        //             ->required()
-                        //             ->reactive()
-                        //             ->afterStateUpdated(function (Closure $set, $state) {
-                        //                 $set('slug', Str::slug($state, '-'));
-                        //             })
-                        //             ->unique(ignoreRecord: true),
-                        //         Forms\Components\TextInput::make('slug')
-                        //             ->disabled(),
-                        //         Forms\Components\TextInput::make('price')
-                        //             ->required()
-                        //             ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask->money(prefix: 'Rp.', thousandsSeparator: ',', decimalPlaces: 2, isSigned: false))
-                        //             ->columnSpanFull(),
-                        //         Forms\Components\MarkdownEditor::make('description')
-                        //             ->required()
-                        //             ->disableToolbarButtons([
-                        //                 'attachFiles',
-                        //                 'codeBlock',
-                        //                 'link',
-                        //                 'strike',
-                        //             ])
-                        //             ->columnSpanFull()
-                        //     ])
-                        //     ->columns(2)
-                        //     ->columnSpan(2),
-
                         Forms\Components\Section::make('Associations')
                             ->extraAttributes(['class' => 'row-span-4'])
                             ->schema([
-                                Forms\Components\Select::make('product_material_id')
+                                Forms\Components\Select::make('material_id')
                                     ->required()
-                                    ->relationship('meterial', 'name'),
-                                Forms\Components\Select::make('product_category_id')
+                                    ->relationship('meterial', 'id'),
+                                Forms\Components\Select::make('category_id')
                                     ->required()
-                                    ->relationship('category', 'name'),
+                                    ->relationship('category', 'id'),
                                 Forms\Components\CheckboxList::make('colors')
                                     ->required()
                                     ->bulkToggleable()
@@ -122,7 +91,8 @@ class ProductResource extends Resource
                                     ->columns(3)
                                     ->relationship('sizes', 'name'),
                             ])
-                            ->columnSpan(1),
+                            ->columns(2)
+                            ->columnSpan(2),
                         Forms\Components\Card::make()
                             ->schema([
                                 Forms\Components\Placeholder::make('created_at')

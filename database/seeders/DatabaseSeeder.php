@@ -35,10 +35,10 @@ class DatabaseSeeder extends Seeder
             ->create();
 
         $this->call([
-            ProductMaterialSeeder::class,
-            ProductColorSeeder::class,
-            ProductCategorySeeder::class,
-            ProductSizeSeeder::class,
+            MaterialSeeder::class,
+            ColorSeeder::class,
+            CategorySeeder::class,
+            SizeSeeder::class,
         ]);
     }
 }
