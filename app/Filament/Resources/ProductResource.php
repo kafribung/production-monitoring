@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
+use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
 use Closure;
 use Filament\Forms;
@@ -10,7 +11,10 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
-
+use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\{
+    Builder,
+};
 use Illuminate\Support\Str;
 
 class ProductResource extends Resource
@@ -77,10 +81,10 @@ class ProductResource extends Resource
                             ->schema([
                                 Forms\Components\Select::make('material_id')
                                     ->required()
-                                    ->relationship('meterial', 'id'),
+                                    ->relationship('materil', 'name'),
                                 Forms\Components\Select::make('category_id')
                                     ->required()
-                                    ->relationship('category', 'id'),
+                                    ->relationship('category', 'name'),
                                 Forms\Components\CheckboxList::make('colors')
                                     ->required()
                                     ->bulkToggleable()
@@ -92,17 +96,8 @@ class ProductResource extends Resource
                                     ->relationship('sizes', 'name'),
                             ])
                             ->columns(2)
-                            ->columnSpan(2),
-                        Forms\Components\Card::make()
-                            ->schema([
-                                Forms\Components\Placeholder::make('created_at')
-                                    ->label('Created at')
-                                    ->content(fn (?Product $record): string => $record && $record->created_at ? $record->created_at->diffForHumans() : '-'),
-                                Forms\Components\Placeholder::make('updated_at')
-                                    ->label('Last modified at')
-                                    ->content(fn (?Product $record): string => $record && $record->updated_at ? $record->updated_at->diffForHumans() : '-'),
-                            ])
-                            ->columnSpan(1),
+                            ->columnSpanFull(),
+
                     ]),
             ]);
     }
@@ -111,7 +106,31 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('name')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('price')
+                    ->money('idr', true)
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('stock_first')
+                    ->label('Stock')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('materil.name')
+                    ->label('Material')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('category.name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('colors.name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('sizes.name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Created At')
+                    ->sortable()
+                    ->since(),
             ])
             ->filters([
                 //
@@ -127,7 +146,7 @@ class ProductResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\ImagesRelationManager::class
         ];
     }
 
@@ -140,8 +159,15 @@ class ProductResource extends Resource
         ];
     }
 
-    protected static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
-    }
+    // protected static function getNavigationBadge(): ?string
+    // {
+    //     return static::getModel()::count();
+    // }
+
+
+    // public static function getEloquentQuery(): Builder
+    // {
+    //     return parent::getEloquentQuery()
+    //         ->latest('updated_at');
+    // }
 }

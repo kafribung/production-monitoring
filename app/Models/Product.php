@@ -18,7 +18,7 @@ class Product extends Model
         'deleted_at',
     ];
 
-    public function meterial()
+    public function materil()
     {
         return $this->belongsTo(Material::class, 'material_id');
     }
@@ -36,5 +36,10 @@ class Product extends Model
     public function sizes()
     {
         return $this->belongsToMany(Size::class);
+    }
+
+    public function images()
+    {
+        return $this->hasMany(Image::class, 'product_id');
     }
 }
