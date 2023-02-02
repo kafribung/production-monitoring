@@ -31,7 +31,10 @@ class ColorResource extends Resource
                                     ->disableAutocomplete()
                                     ->required()
                                     ->unique(ignoreRecord: true),
+                                Forms\Components\ColorPicker::make('hexa')
+                                    ->required(),
                             ])
+                            ->columns(2)
                             ->columnSpan(2),
                         Forms\Components\Card::make()
                             ->schema([
@@ -43,7 +46,9 @@ class ColorResource extends Resource
                                     ->content(fn (?Color $record): string => $record && $record->updated_at ? $record->updated_at->diffForHumans() : '-'),
                             ])
                             ->columnSpan(1),
-                    ]),
+                    ])
+
+
             ]);
     }
 

@@ -39,10 +39,10 @@ class ImagesRelationManager extends RelationManager
             ->schema([
                 Forms\Components\FileUpload::make('name')
                     ->image()
-                    ->imageResizeMode('cover')
-                    ->imageCropAspectRatio('16:9')
-                    ->imageResizeTargetWidth('1920')
-                    ->imageResizeTargetHeight('1080')
+                    // ->imageResizeMode('cover')
+                    // ->imageCropAspectRatio('16:9')
+                    // ->imageResizeTargetWidth('1920')
+                    // ->imageResizeTargetHeight('1080')
                     ->maxSize(1024)
                     ->required()
                     ->getUploadedFileNameForStorageUsing(function ($file): string {
