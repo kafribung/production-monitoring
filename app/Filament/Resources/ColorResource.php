@@ -59,6 +59,10 @@ class ColorResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\ColorColumn::make('hexa')
+                    ->copyable()
+                    ->copyMessage('Color code copied')
+                    ->copyMessageDuration(1500),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('created_at')
                     ->sortable()
