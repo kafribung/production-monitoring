@@ -11,7 +11,6 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
-use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\{
     Builder,
 };

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\User\HomeController;
+use App\Http\Controllers\User\{DetailController, HomeController};
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -30,4 +30,5 @@ Route::get('dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-require __DIR__.'/auth.php';
+Route::get('/detail/{product:slug}', [DetailController::class, 'index'])->name('detail.index');
+require __DIR__ . '/auth.php';

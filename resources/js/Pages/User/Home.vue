@@ -3,30 +3,13 @@
 import { Head, Link } from "@inertiajs/inertia-vue3";
 // Component
 import HeroSection from "@/Components/HeroSection.vue";
+import Currency from "@/Components/Currency.vue";
 import Footer from "@/Components/Footer.vue";
 
-// defineProps({
-//     canLogin: Boolean,
-//     canRegister: Boolean,
-//     laravelVersion: String,
-//     phpVersion: String
-// });
+// Setter
+const url_img = location.origin + '/storage/'
 
-// const products = [
-//     {
-//         id: 1,
-//         name: 'Basic Tee',
-//         href: '#',
-//         imageSrc: 'https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg',
-//         imageAlt: "Front of men's Basic Tee in black.",
-//         price: '$35',
-//         color: 'Black',
-//     },
-// ]
-
-
-const url_img = location.href + 'storage/'
-
+// Props
 defineProps({ products: Object })
 </script>
 
@@ -34,8 +17,10 @@ defineProps({ products: Object })
 
     <Head title="Home" />
 
+    <!-- Herosection -->
     <HeroSection />
 
+    <!-- Header Sections -->
     <div class="bg-gray-800">
         <div class="mx-auto max-w-7xl py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
             <div class="text-center">
@@ -48,13 +33,12 @@ defineProps({ products: Object })
         </div>
     </div>
 
+    <!-- Product List -->
     <div class="bg-white">
         <div class="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
             <h2 class="text-2xl font-bold tracking-tight text-gray-900">Customers also purchased</h2>
-
             <div class="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
                 <div v-for="product in products" :key="product.id" class="group relative">
-                    <!-- <p>{{ product }}</p> -->
                     <div
                         class="min-h-80 aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:aspect-none lg:h-80">
                         <img :src="url_img + product.oldest_image.name" :alt="product.oldest_image.name"
@@ -63,22 +47,21 @@ defineProps({ products: Object })
                     <div class="mt-4 flex justify-between">
                         <div>
                             <h3 class="text-sm text-gray-700">
-                                <a :href="product.href">
-                                    <span aria-hidden="true" class="absolute inset-0" />
-                                    {{ product.name }}
-                                </a>
+                                <Link :href="route('detail.index', product)">
+                                <span aria-hidden="true" class="absolute inset-0" />
+                                {{ product.name }}
+                                </Link>
                             </h3>
-                            <!-- <p v-for="color in product.colors" :key="color.id" class="mt-1 text-sm text-gray-500">
-                                {{ color.name }}
-                            </p> -->
                         </div>
-                        <p class="text-sm font-medium text-gray-900">{{ product.price }}</p>
+                        <p class="text-sm font-medium text-gray-900">
+                            <Currency :price="product.price" />
+                        </p>
                     </div>
                     <ul role="list" class="flex items-center justify-start space-x-3 pt-6">
                         <li v-for="color in product.colors" :key="color.id"
                             class="h-4 w-4 rounded-full border border-black border-opacity-10"
-                            style="background-color: #111827">
-                            <span class="sr-only"> {{ color.name }} </span>
+                            :style="{ backgroundColor: color.hexa }">
+                            <span class="sr-only"> {{ color.name }} {{ color.hexa }}</span>
                         </li>
                     </ul>
                 </div>

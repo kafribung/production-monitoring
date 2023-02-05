@@ -12,9 +12,10 @@ class HomeController extends Controller
     {
         $products = Product::with(
             'oldestImage:id,images.product_id,name',
-            'colors:id,name'
+            'colors:id,name,hexa'
         )
-            ->limit(10)->get();
+            ->limit(10)->get(['id', 'name', 'slug', 'price']);
+
 
         // dd($products->toArray());
         return Inertia::render('User/Home', compact('products'));

@@ -9,7 +9,6 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ImagesRelationManager extends RelationManager
 {
@@ -39,10 +38,10 @@ class ImagesRelationManager extends RelationManager
             ->schema([
                 Forms\Components\FileUpload::make('name')
                     ->image()
-                    // ->imageResizeMode('cover')
-                    // ->imageCropAspectRatio('16:9')
-                    // ->imageResizeTargetWidth('1920')
-                    // ->imageResizeTargetHeight('1080')
+                    ->imageResizeMode('cover')
+                    ->imageCropAspectRatio('4:5')
+                    ->imageResizeTargetWidth('1920')
+                    ->imageResizeTargetHeight('1080')
                     ->maxSize(1024)
                     ->required()
                     ->getUploadedFileNameForStorageUsing(function ($file): string {
