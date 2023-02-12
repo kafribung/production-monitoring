@@ -31,4 +31,5 @@ Route::get('dashboard', function () {
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/detail/{product:slug}', [DetailController::class, 'index'])->name('detail.index');
+Route::post('/detail/chart', [DetailController::class, 'chart'])->name('detail.chart');
 require __DIR__ . '/auth.php';

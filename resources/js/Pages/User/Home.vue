@@ -14,6 +14,7 @@ defineProps({ products: Object })
 </script>
 
 <template>
+    <!-- Head -->
 
     <Head title="Home" />
 

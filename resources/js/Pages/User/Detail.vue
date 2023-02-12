@@ -1,12 +1,11 @@
 
 <script setup>
-import { Head, Link } from "@inertiajs/inertia-vue3";
+import { Head, Link, useForm } from "@inertiajs/inertia-vue3";
 // Component
 import Navbar from "@/Components/Navbar.vue";
 import Currency from "@/Components/Currency.vue";
 import Footer from "@/Components/Footer.vue";
 
-import { reactive } from 'vue'
 import {
     Disclosure,
     DisclosureButton,
@@ -22,22 +21,40 @@ import {
 } from '@headlessui/vue'
 import { StarIcon } from '@heroicons/vue/20/solid'
 import { MinusIcon, PlusIcon } from '@heroicons/vue/24/outline'
+import InputError from '@/Components/InputError.vue';
 
 // Setter
 const url_img = location.origin + '/storage/'
 
 // Props
-defineProps({ product: Object })
+const props = defineProps({
+    product: Object,
+})
 
 // State
-const form = reactive({
+const form = useForm({
     color_id: null,
+    qunatity: 1,
+    size: props.product.sizes[0].id,
 })
+
+// Submit handler
+function submit() {
+    console.log(location);
+    form.post(route('detail.chart'),
+        {
+            preserveScroll: (page) => Object.keys(page.props.errors).length,
+            onSuccess: () => form.reset('color_id', 'qunatity'),
+        }
+    )
+}
+
 </script>
 
 <template>
+    <!-- Head -->
 
-    <!-- <Head :title="`Detail ${pro}`" /> -->
+    <Head :title="`Detail ${product.name}`" />
 
     <!-- Navbar -->
     <Navbar />
@@ -118,11 +135,12 @@ const form = reactive({
                         <div class="space-y-6 text-base text-gray-700" v-html="product.description" />
                     </div>
 
-                    <form class="mt-6">
+                    <!-- form.post('/detail/chart') -->
+                    <form @submit.prevent="submit" class="mt-6">
+
                         <!-- Colors -->
                         <div>
                             <h3 class="text-sm text-gray-600">Colors</h3>
-
                             <RadioGroup v-model="form.color_id" class="mt-2">
                                 <RadioGroupLabel class="sr-only"> Choose a color </RadioGroupLabel>
                                 <span class="flex items-center space-x-3">
@@ -141,9 +159,32 @@ const form = reactive({
                             </RadioGroup>
                         </div>
 
+                        <div class="flex justify-start">
+                            <div class="mt-4">
+                                <label for="quantity" class="text-sm block mb-1 text-gray-600 ">Quantity</label>
+                                <select id="quantity" v-model="form.qunatity"
+                                    class="rounded-md border border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
+                                    <option v-for="n in 10" :value="n">{{ n }}</option>
+                                </select>
+                            </div>
+
+                            <div class="mt-4 ml-2">
+                                <label for="size" class="text-sm block mb-1 text-gray-600">Size</label>
+                                <select id="size" v-model="form.size"
+                                    class="rounded-md border border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
+                                    <option v-for="size in product.sizes" :key="size.id" :value="size.id">{{
+                                        size.name
+                                    }}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Error messages -->
+                        <InputError class="mt-2" :message="form.errors.color_id" />
+                        <InputError class="mt-2" :message="form.errors.qunatity" />
                         <div class="sm:flex-col1 mt-10 flex">
-                            <button type="submit"
-                                class="flex max-w-xs flex-1 items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full">Add
+                            <button type="submit" :disabled="form.processing"
+                                class="flex max-w-full flex-1 items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full">Add
                                 to bag
                             </button>
                         </div>
@@ -172,6 +213,34 @@ const form = reactive({
                                 <DisclosurePanel as="div" class="prose prose-sm pb-6">
                                     <ul role="list">
                                         <li>{{ product.materil.name }}</li>
+                                    </ul>
+                                </DisclosurePanel>
+                            </Disclosure>
+                        </div>
+                    </section>
+                    <section aria-labelledby="details-heading" class="mt-12">
+                        <h2 id="details-heading" class="sr-only">Additional details</h2>
+
+                        <div class="divide-y divide-gray-200 border-t">
+                            <Disclosure as="div" v-slot="{ open }">
+                                <h3>
+                                    <DisclosureButton
+                                        class="group relative flex w-full items-center justify-between py-6 text-left">
+                                        <span
+                                            :class="[open ? 'text-indigo-600' : 'text-gray-900', 'text-sm font-medium']">Stok</span>
+                                        <span class="ml-6 flex items-center">
+                                            <PlusIcon v-if="!open"
+                                                class="block h-6 w-6 text-gray-400 group-hover:text-gray-500"
+                                                aria-hidden="true" />
+                                            <MinusIcon v-else
+                                                class="block h-6 w-6 text-indigo-400 group-hover:text-indigo-500"
+                                                aria-hidden="true" />
+                                        </span>
+                                    </DisclosureButton>
+                                </h3>
+                                <DisclosurePanel as="div" class="prose prose-sm pb-6">
+                                    <ul role="list">
+                                        <li>{{ product.stock_first }}</li>
                                     </ul>
                                 </DisclosurePanel>
                             </Disclosure>

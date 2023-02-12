@@ -18,34 +18,45 @@ class DetailController extends Controller
         $product = $product->load([
             'images:id,images.product_id,name',
             'colors:id,name,hexa',
-            'materil:id,name'
+            'colors:id,name,hexa',
+            'materil:id,name',
+            'sizes:id,name',
         ])
-            ->only(['id', 'name', 'price', 'description', 'images', 'colors', 'materil']);
+            ->only([
+                'id',
+                'name',
+                'price',
+                'description',
+                'images',
+                'colors',
+                'materil',
+                'sizes',
+                'stock_first'
+            ]);
 
+        // dd($product['sizes'][0]['id']);
         return inertia('User/Detail', [
-            'product' => $product
+            'product' => $product,
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
-     * Store a newly created resource in storage.
+     * Chart a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function chart(Request $request)
     {
-        //
+        dd($request);
+        $data = $request->validate([
+            'color_id' => 'bail|required|numeric',
+            'qunatity' => 'bail|required|numeric',
+        ]);
+
+        // $product = Product::find('');
+        // return to_route('home');
     }
 
     /**
