@@ -40,7 +40,6 @@ const form = useForm({
 
 // Submit handler
 function submit() {
-    console.log(location);
     form.post(route('detail.chart'),
         {
             preserveScroll: (page) => Object.keys(page.props.errors).length,
@@ -48,7 +47,6 @@ function submit() {
         }
     )
 }
-
 </script>
 
 <template>
