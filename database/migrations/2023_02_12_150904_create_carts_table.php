@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class () extends Migration {
+return new class() extends Migration
+{
     /**
      * Run the migrations.
      *
@@ -12,11 +13,12 @@ return new class () extends Migration {
      */
     public function up()
     {
-        Schema::create('charts', function (Blueprint $table) {
+        Schema::create('carts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
             $table->foreignId('color_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
-            $table->smallInteger('quantiry');
+            $table->foreignId('size_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
+            $table->smallInteger('qunatity');
             $table->integer('price');
 
             $table->foreignId('created_by')
@@ -40,6 +42,6 @@ return new class () extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('charts');
+        Schema::dropIfExists('carts');
     }
 };

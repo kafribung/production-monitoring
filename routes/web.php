@@ -30,6 +30,10 @@ Route::get('dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/detail/{product:slug}', [DetailController::class, 'index'])->name('detail.index');
-Route::post('/detail/chart', [DetailController::class, 'chart'])->name('detail.chart');
+
+Route::prefix('detail')->name('detail.')->controller(DetailController::class)->group(function () {
+    Route::get('/{product:slug}', 'index')->name('index');
+    Route::post('/cart', 'cart')->name('cart')->middleware(['auth', 'verified']);
+});
+
 require __DIR__ . '/auth.php';

@@ -4,6 +4,7 @@ import { Head, Link, useForm } from "@inertiajs/inertia-vue3";
 // Component
 import Navbar from "@/Components/Navbar.vue";
 import Currency from "@/Components/Currency.vue";
+import Banner from "@/Components/Banner.vue";
 import Footer from "@/Components/Footer.vue";
 
 import {
@@ -35,12 +36,13 @@ const props = defineProps({
 const form = useForm({
     color_id: null,
     qunatity: 1,
-    size: props.product.sizes[0].id,
+    size_id: props.product.sizes[0].id,
+    product_id: props.product.id,
 })
 
 // Submit handler
 function submit() {
-    form.post(route('detail.chart'),
+    form.post(route('detail.cart'),
         {
             preserveScroll: (page) => Object.keys(page.props.errors).length,
             onSuccess: () => form.reset('color_id', 'qunatity'),
@@ -75,6 +77,10 @@ function submit() {
 
     <!-- Product Overviews -->
     <div class="bg-white">
+        <!-- Alert -->
+        <div v-if="$page.props.flash.message">
+            <Banner :message="$page.props.flash.message" />
+        </div>
         <div class="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
             <div class="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
                 <!-- Image gallery -->
@@ -133,9 +139,7 @@ function submit() {
                         <div class="space-y-6 text-base text-gray-700" v-html="product.description" />
                     </div>
 
-                    <!-- form.post('/detail/chart') -->
                     <form @submit.prevent="submit" class="mt-6">
-
                         <!-- Colors -->
                         <div>
                             <h3 class="text-sm text-gray-600">Colors</h3>
@@ -168,7 +172,7 @@ function submit() {
 
                             <div class="mt-4 ml-2">
                                 <label for="size" class="text-sm block mb-1 text-gray-600">Size</label>
-                                <select id="size" v-model="form.size"
+                                <select id="size" v-model="form.size_id"
                                     class="rounded-md border border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
                                     <option v-for="size in product.sizes" :key="size.id" :value="size.id">{{
                                         size.name
