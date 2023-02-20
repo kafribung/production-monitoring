@@ -46,6 +46,11 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'message' => fn () => $request->session()->get('message')
             ],
+            'carts' => [
+                'cart' => $request->user() ? $request->user()->carts->load(['product.oldestImage:id,images.product_id,name', 'color:id,hexa', 'size:id,name']) : null,
+            ]
         ]);
     }
+
+    // 'product:id,name,slug,price'
 }

@@ -19,4 +19,24 @@ class Cart extends Model
         'updated_at',
         'deleted_at',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'created_at');
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function color()
+    {
+        return $this->belongsTo(Color::class);
+    }
+
+    public function size()
+    {
+        return $this->belongsTo(Size::class);
+    }
 }

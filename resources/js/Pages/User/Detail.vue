@@ -51,8 +51,7 @@ function submit() {
 }
 </script>
 
-<template>
-    <!-- Head -->
+<template><!-- Head -->
 
     <Head :title="`Detail ${product.name}`" />
 
@@ -86,7 +85,7 @@ function submit() {
                 <!-- Image gallery -->
                 <TabGroup as="div" class="flex flex-col-reverse">
                     <!-- Image selector -->
-                    <div class="mx-auto mt-6 hidden w-full max-w-2xl sm:block lg:max-w-none">
+                    <div class="mx-auto mt-6 hiddecan w-full max-w-2xl sm:block lg:max-w-none">
                         <TabList class="grid grid-cols-4 gap-6">
                             <Tab v-for="image in product.images" :key="image.id"
                                 class="relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4"
@@ -254,8 +253,7 @@ function submit() {
     </div>
 
     <!-- Footer -->
-    <Footer />
-
+<Footer />
 </template>
 
 

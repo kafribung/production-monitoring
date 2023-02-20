@@ -82,4 +82,9 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
 
         $this->save();
     }
+
+    public function carts()
+    {
+        return  $this->hasMany(Cart::class, 'created_by');
+    }
 }

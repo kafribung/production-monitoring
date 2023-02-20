@@ -33,7 +33,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::prefix('detail')->name('detail.')->controller(DetailController::class)->group(function () {
     Route::get('/{product:slug}', 'index')->name('index');
-    Route::post('/cart', 'cart')->name('cart')->middleware(['auth', 'verified']);
+    Route::post('/cart', 'cart')->name('cart')->middleware('verified');
 });
 
 require __DIR__ . '/auth.php';

@@ -22,4 +22,9 @@ class Size extends Model
     {
         return $this->belongsToMany(Product::class);
     }
+
+    public function carts()
+    {
+        return  $this->hasMany(Cart::class);
+    }
 }
