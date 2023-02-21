@@ -6,7 +6,7 @@ import { computed, reactive } from 'vue'
 import Currency from "@/Components/Currency.vue";
 
 // Data
-const data = reactive({
+let data = reactive({
     sum: 0,
     total: [],
 })
@@ -18,16 +18,17 @@ const url_img = location.origin + '/storage/'
 function insertSubTotal(total) {
     data.total.push(total)
 }
+
 // Computed
-const sub_total = computed(() => data.total.forEach(p => {
+let sub_total = computed(() => data.total.forEach(p => {
     data.sum += p;
 }));
 
+console.log(data.sum);
 </script>
 
 <template>
     {{ $page.props.carts.cart }}
-    {{ sub_total }}
     <Disclosure as="nav" class="bg-white shadow" v-slot="{ open }">
         <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
             <div class="relative flex h-16 justify-between">
@@ -137,11 +138,12 @@ const sub_total = computed(() => data.total.forEach(p => {
                                                 <div class="flex items-center justify-between">
                                                     <dt class="text-base font-medium text-gray-900">Subtotal
                                                     </dt>
-                                                    <dd class="ml-4 text-base font-medium text-gray-900">{{ sub_total }}
+                                                    <dd class="ml-4 text-base hidden font-medium text-gray-900">{{ sub_total
+                                                    }}
                                                     </dd>
-                                                    <dd class="ml-4 text-base font-medium text-gray-900">{{ data.sum }}
+                                                    <dd class="ml-4 text-base font-medium text-gray-900">
+                                                        <Currency :price="data.sum" />
                                                     </dd>
-
                                                 </div>
                                             </dl>
                                             <p class="mt-1 text-sm text-gray-500">Shipping and taxes will be calculated

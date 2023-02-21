@@ -22,9 +22,11 @@ class EditProduct extends EditRecord
         return $this->getResource()::getUrl('index');
     }
 
-    protected function mutateFormDataBeforeSave(array $data): array
+    protected function mutateFormDataBeforeFill(array $data): array
     {
-        $data['updated_by'] = auth()->id();
+        $data['slug']    = $data['slug'];
+
+        $data['user_id'] = auth()->id();
 
         return $data;
     }
