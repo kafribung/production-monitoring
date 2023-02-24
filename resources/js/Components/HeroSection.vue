@@ -1,7 +1,9 @@
 <script setup>
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { Link } from "@inertiajs/inertia-vue3";
+
 
 const navigation = [
     { name: 'Kemeja', href: '#' },
@@ -41,10 +43,46 @@ const navigation = [
                                 </div>
                             </div>
                             <div class="hidden md:ml-10 md:block md:space-x-8 md:pr-4">
+
                                 <Link v-for="item in navigation" :key="item.name" :href="item.href"
-                                    class="font-medium text-gray-500 hover:text-gray-900">{{ item.name }}</Link>
-                                <Link :href="route('login')" class="font-medium text-indigo-600 hover:text-indigo-500">
+                                    class="font-medium text-gray-500 hover:text-gray-900">{{ item.name }}
+                                </Link>
+
+                                <Link v-if="!$page.props.auth.user" :href="route('login')"
+                                    class="font-medium text-indigo-600 hover:text-indigo-500">
                                 Log in</Link>
+
+                                <Menu as="div" class="inline-flex">
+                                    <MenuButton v-if="$page.props.auth.user"
+                                        class="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                        <span class="sr-only">Open user menu</span>
+                                        <img class="h-8 w-8 rounded-full"
+                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                            alt="" />
+                                    </MenuButton>
+                                    <transition v-if="$page.props.auth.user"
+                                        enter-active-class="transition ease-out duration-200"
+                                        enter-from-class="transform opacity-0 scale-95"
+                                        enter-to-class="transform opacity-100 scale-100"
+                                        leave-active-class="transition ease-in duration-75"
+                                        leave-from-class="transform opacity-100 scale-100"
+                                        leave-to-class="transform opacity-0 scale-95">
+                                        <MenuItems
+                                            class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                            <MenuItem v-slot="{ active }">
+                                            <a href="#"
+                                                :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Your
+                                                Profile</a>
+                                            </MenuItem>
+                                            <MenuItem v-slot="{ active }">
+                                            <Link :href="route('logout')" method="post"
+                                                :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">
+                                            Logout
+                                            </Link>
+                                            </MenuItem>
+                                        </MenuItems>
+                                    </transition>
+                                </Menu>
                             </div>
                         </nav>
                     </div>
@@ -58,8 +96,7 @@ const navigation = [
                                 <div class="flex items-center justify-between px-5 pt-4">
                                     <div>
                                         <img class="h-8 w-auto"
-                                            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                                            alt="" />
+                                            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="" />
                                     </div>
                                     <div class="-mr-2">
                                         <PopoverButton

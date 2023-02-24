@@ -42,7 +42,7 @@ const form = useForm({
 
 // Submit handler
 function submit() {
-    form.post(route('detail.cart'),
+    form.post(route('cart.store'),
         {
             preserveScroll: (page) => Object.keys(page.props.errors).length,
             onSuccess: () => form.reset('color_id', 'qunatity'),
@@ -51,7 +51,8 @@ function submit() {
 }
 </script>
 
-<template><!-- Head -->
+<template>
+    <!-- Head -->
 
     <Head :title="`Detail ${product.name}`" />
 
@@ -253,7 +254,7 @@ function submit() {
     </div>
 
     <!-- Footer -->
-<Footer />
+    <Footer />
 </template>
 
 
