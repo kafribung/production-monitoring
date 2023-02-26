@@ -44,7 +44,7 @@ const form = useForm({
 function submit() {
     form.post(route('cart.store'),
         {
-            preserveScroll: (page) => Object.keys(page.props.errors).length,
+            preserveScroll: true,
             onSuccess: () => form.reset('color_id', 'qunatity'),
         }
     )

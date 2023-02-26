@@ -47,4 +47,17 @@ class CartController extends Controller
         Session::flash('message', 'Product successfully added to cart');
         return to_route('detail.index', $product);
     }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Cart $cart)
+    {
+        Session::flash('message', 'Product successfully remove from cart');
+        $cart->delete();
+        return back();
+    }
 }

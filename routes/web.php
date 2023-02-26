@@ -35,6 +35,7 @@ Route::get('detail/{product:slug}', DetailController::class)->name('detail.index
 
 Route::prefix('cart')->name('cart.')->controller(CartController::class)->group(function () {
     Route::post('', 'store')->name('store');
+    Route::delete('/{cart}', 'destroy')->name('destroy');
 })->middleware('verified');
 
 

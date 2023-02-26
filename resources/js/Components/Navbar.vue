@@ -15,20 +15,31 @@ let data = reactive({
 const url_img = location.origin + '/storage/'
 
 // Function
-function insertSubTotal(total) {
-    data.total.push(total)
+function insertSubTotal(total, count) {
+    console.log(data.total.length);
+    if (data.total.length != count) {
+        data.total.push(total)
+
+
+    }
 }
+
+// function subTotal() {
+//     data.total.forEach(p => {
+//         data.sum += p;
+//     })
+//     return data.sum
+// }
 
 // Computed
 let sub_total = computed(() => data.total.forEach(p => {
     data.sum += p;
 }));
 
-console.log(data.sum);
 </script>
 
 <template>
-    {{ $page.props.carts.cart }}
+    {{ data }}
     <Disclosure as="nav" class="bg-white shadow" v-slot="{ open }">
         <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
             <div class="relative flex h-16 justify-between">
@@ -85,50 +96,52 @@ console.log(data.sum);
                             leave-to-class="transform opacity-0 scale-95">
                             <MenuItems
                                 class="absolute right-0 z-10 mt-2 w-96 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                <section class="p-4" aria-labelledby="cart-heading">
+                                    <ul role="list" class="divide-y divide-gray-200 border-t border-b border-gray-200">
+                                        <li v-for="(cart, index) in $page.props.carts.cart" :key="index" class="flex py-6">
+                                            <div class="flex-shrink-0">
+                                                <img :src="url_img + cart.product.oldest_image.name"
+                                                    :alt="cart.product.oldest_image.name"
+                                                    class="h-24 w-24 rounded-md object-cover object-center sm:h-32 sm:w-32" />
+                                            </div>
+
+                                            <div class="ml-4 flex flex-1 flex-col sm:ml-6">
+                                                <div>
+                                                    <div class="flex justify-between">
+                                                        <h4 class="text-sm">
+                                                            <a :href="cart.href"
+                                                                class="font-medium text-gray-700 hover:text-gray-800">{{
+                                                                    cart.product.name
+                                                                }}</a>
+                                                        </h4>
+                                                        <p class="ml-4 text-sm font-medium text-gray-900">
+                                                            <Currency :price="cart.price" />
+                                                        </p>
+                                                        <div>{{ insertSubTotal(cart.price, $page.props.carts.cart.length) }}
+                                                        </div>
+                                                    </div>
+                                                    <div :style="{ backgroundColor: cart.color.hexa }"
+                                                        class="h-5 w-5 rounded-full mt-4">
+                                                    </div>
+                                                    <p class="mt-4 text-sm text-gray-500">{{ cart.size.name }}</p>
+                                                </div>
+
+                                                <div class="mt-4 flex items-end justify-end">
+                                                    <div class="ml-4">
+                                                        <!-- :only="$page.props.carts.cart" -->
+                                                        <Link :href="route('cart.destroy', cart.id)" method="delete"
+                                                            as="button"
+                                                            class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                                                        <span>Remove</span>
+                                                        </Link>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </section>
+
                                 <form class="p-4">
-                                    <section aria-labelledby="cart-heading">
-                                        <ul role="list" class="divide-y divide-gray-200 border-t border-b border-gray-200">
-                                            <li v-for="(cart, index) in $page.props.carts.cart" :key="cart.id"
-                                                class="flex py-6">
-                                                <div class="flex-shrink-0">
-                                                    <img :src="url_img + cart.product.oldest_image.name"
-                                                        :alt="cart.product.oldest_image.name"
-                                                        class="h-24 w-24 rounded-md object-cover object-center sm:h-32 sm:w-32" />
-                                                </div>
-
-                                                <div class="ml-4 flex flex-1 flex-col sm:ml-6">
-                                                    <div>
-                                                        <div class="flex justify-between">
-                                                            <h4 class="text-sm">
-                                                                <a :href="cart.href"
-                                                                    class="font-medium text-gray-700 hover:text-gray-800">{{
-                                                                        cart.product.name
-                                                                    }}</a>
-                                                            </h4>
-                                                            <p class="ml-4 text-sm font-medium text-gray-900">
-                                                                <Currency :price="cart.price" />
-                                                            </p>
-                                                            <div>{{ insertSubTotal(cart.price) }}</div>
-                                                        </div>
-                                                        <div :style="{ backgroundColor: cart.color.hexa }"
-                                                            class="h-5 w-5 rounded-full mt-4">
-                                                        </div>
-                                                        <p class="mt-4 text-sm text-gray-500">{{ cart.size.name }}</p>
-                                                    </div>
-
-                                                    <div class="mt-4 flex items-end justify-end">
-                                                        <div class="ml-4">
-                                                            <button type="button"
-                                                                class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
-                                                                <span>Remove</span>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </section>
-
                                     <!-- Order summary -->
                                     <section aria-labelledby="summary-heading" class="mt-10">
                                         <h2 id="summary-heading" class="sr-only">Order summary</h2>
@@ -138,8 +151,8 @@ console.log(data.sum);
                                                 <div class="flex items-center justify-between">
                                                     <dt class="text-base font-medium text-gray-900">Subtotal
                                                     </dt>
-                                                    <dd class="ml-4 text-base hidden font-medium text-gray-900">{{ sub_total
-                                                    }}
+                                                    <dd class="ml-4 text-base hidden font-medium text-gray-900">
+                                                        {{ sub_total }}
                                                     </dd>
                                                     <dd class="ml-4 text-base font-medium text-gray-900">
                                                         <Currency :price="data.sum" />
@@ -155,7 +168,6 @@ console.log(data.sum);
                                                 class="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">Checkout</button>
                                         </div>
                                     </section>
-
                                 </form>
                             </MenuItems>
                         </transition>
