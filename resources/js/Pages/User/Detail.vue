@@ -1,6 +1,6 @@
 
 <script setup>
-import { Head, Link, useForm } from "@inertiajs/inertia-vue3";
+import { Head, Link, useForm, InertiaLink } from "@inertiajs/inertia-vue3";
 // Component
 import Navbar from "@/Components/Navbar.vue";
 import Currency from "@/Components/Currency.vue";
@@ -23,6 +23,7 @@ import {
 import { StarIcon } from '@heroicons/vue/20/solid'
 import { MinusIcon, PlusIcon } from '@heroicons/vue/24/outline'
 import InputError from '@/Components/InputError.vue';
+import NProgress from 'nprogress'
 
 // Setter
 const url_img = location.origin + '/storage/'
@@ -49,6 +50,11 @@ function submit() {
         }
     )
 }
+
+
+// NProgress
+NProgress.start();
+NProgress.done()
 </script>
 
 <template>

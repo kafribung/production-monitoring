@@ -4,6 +4,8 @@ import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuIt
 import { Bars3Icon, XMarkIcon, ShoppingBagIcon } from '@heroicons/vue/24/outline'
 import { computed, reactive } from 'vue'
 import Currency from "@/Components/Currency.vue";
+import { Inertia } from '@inertiajs/inertia'
+
 
 // Data
 let data = reactive({
@@ -16,25 +18,28 @@ const url_img = location.origin + '/storage/'
 
 // Function
 function insertSubTotal(total, count) {
-    console.log(data.total.length);
     if (data.total.length != count) {
         data.total.push(total)
-
-
     }
 }
-
-// function subTotal() {
-//     data.total.forEach(p => {
-//         data.sum += p;
-//     })
-//     return data.sum
-// }
 
 // Computed
 let sub_total = computed(() => data.total.forEach(p => {
     data.sum += p;
 }));
+
+// Function remove cart
+function destroy(index, id) {
+    delete data.total[index]
+
+    Inertia.delete(`/cart/${id}`, {
+        onBefore: () => confirm('Are you sure you want to delete this user?'),
+    })
+
+    return computed(() => data.total.forEach(p => {
+        data.sum += p;
+    }));
+}
 
 </script>
 
@@ -84,10 +89,10 @@ let sub_total = computed(() => data.total.forEach(p => {
                                         aria-hidden="true" />
                                     <span class="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">{{
                                         $page.props.carts.cart.length }}</span>
-                                    <span class="sr-only">items in cart, view bag</span>
-                                </div>
-                            </MenuButton>
-                        </div>
+                                <span class="sr-only">items in cart, view bag</span>
+                            </div>
+                        </MenuButton>
+                    </div>
 
                         <transition enter-active-class="transition ease-out duration-100"
                             enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100"
@@ -128,12 +133,15 @@ let sub_total = computed(() => data.total.forEach(p => {
 
                                                 <div class="mt-4 flex items-end justify-end">
                                                     <div class="ml-4">
-                                                        <!-- :only="$page.props.carts.cart" -->
-                                                        <Link :href="route('cart.destroy', cart.id)" method="delete"
-                                                            as="button"
+                                                        <!-- <Link :href="route('cart.destroy', cart.id)" method="delete"
+                                                                                                                                                                                                                                                                                                                                                                                            as="button"
+                                                                                                                                                                                                                                                                                                                                                                                            class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                                                                                                                                                                                                                                                                                                                                                                                        <span>Remove</span>
+                                                                                                                                                                                                                                                                                                                                                                                        </Link> -->
+                                                        <button @click="destroy(index, cart.id)"
                                                             class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
-                                                        <span>Remove</span>
-                                                        </Link>
+                                                            <span>Remove</span>
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>

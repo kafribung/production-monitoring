@@ -5,12 +5,18 @@ import { Head, Link } from "@inertiajs/inertia-vue3";
 import HeroSection from "@/Components/HeroSection.vue";
 import Currency from "@/Components/Currency.vue";
 import Footer from "@/Components/Footer.vue";
+import NProgress from 'nprogress'
+
 
 // Setter
 const url_img = location.origin + '/storage/'
 
 // Props
 defineProps({ products: Object })
+
+// NProgress
+NProgress.start()
+NProgress.done()
 </script>
 
 <template>
@@ -72,7 +78,6 @@ defineProps({ products: Object })
 
     <!-- Footer -->
     <Footer />
-
 </template>
 
 

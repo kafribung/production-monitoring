@@ -33,10 +33,9 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('detail/{product:slug}', DetailController::class)->name('detail.index');
 
-Route::prefix('cart')->name('cart.')->controller(CartController::class)->group(function () {
+Route::prefix('cart')->name('cart.')->middleware('verified')->controller(CartController::class)->group(function () {
     Route::post('', 'store')->name('store');
     Route::delete('/{cart}', 'destroy')->name('destroy');
-})->middleware('verified');
-
+});
 
 require __DIR__ . '/auth.php';
