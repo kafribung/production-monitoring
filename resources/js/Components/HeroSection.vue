@@ -1,15 +1,16 @@
 <script setup>
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { Link } from "@inertiajs/inertia-vue3";
 
+// Component
+import Cart from "@/Components/Cart.vue";
 
 const navigation = [
     { name: 'Kemeja', href: '#' },
     { name: 'Jeans', href: '#' },
     { name: 'Kaos', href: '#' },
-    { name: 'Seragam Sekolah', href: '#' }
+    { name: 'Seragam', href: '#' }
 ]
 </script>
 
@@ -43,7 +44,6 @@ const navigation = [
                                 </div>
                             </div>
                             <div class="hidden md:ml-10 md:block md:space-x-8 md:pr-4">
-
                                 <Link v-for="item in navigation" :key="item.name" :href="item.href"
                                     class="font-medium text-gray-500 hover:text-gray-900">{{ item.name }}
                                 </Link>
@@ -51,38 +51,7 @@ const navigation = [
                                 <Link v-if="!$page.props.auth.user" :href="route('login')"
                                     class="font-medium text-indigo-600 hover:text-indigo-500">
                                 Log in</Link>
-
-                                <Menu as="div" class="inline-flex">
-                                    <MenuButton v-if="$page.props.auth.user"
-                                        class="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                                        <span class="sr-only">Open user menu</span>
-                                        <img class="h-8 w-8 rounded-full"
-                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                            alt="" />
-                                    </MenuButton>
-                                    <transition v-if="$page.props.auth.user"
-                                        enter-active-class="transition ease-out duration-200"
-                                        enter-from-class="transform opacity-0 scale-95"
-                                        enter-to-class="transform opacity-100 scale-100"
-                                        leave-active-class="transition ease-in duration-75"
-                                        leave-from-class="transform opacity-100 scale-100"
-                                        leave-to-class="transform opacity-0 scale-95">
-                                        <MenuItems
-                                            class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                            <MenuItem v-slot="{ active }">
-                                            <a href="#"
-                                                :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Your
-                                                Profile</a>
-                                            </MenuItem>
-                                            <MenuItem v-slot="{ active }">
-                                            <Link :href="route('logout')" method="post"
-                                                :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">
-                                            Logout
-                                            </Link>
-                                            </MenuItem>
-                                        </MenuItems>
-                                    </transition>
-                                </Menu>
+                                <Cart />
                             </div>
                         </nav>
                     </div>
@@ -125,7 +94,6 @@ const navigation = [
                     <div class="sm:text-center lg:text-left">
                         <h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
                             <span class="block xl:inline">Data to enrich your</span>
-                            {{ ' ' }}
                             <span class="block text-[#0CB26B] xl:inline">online business</span>
                         </h1>
                         <p
