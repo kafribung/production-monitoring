@@ -1,12 +1,13 @@
 
 <script setup>
+// Imertia
 import { Head, Link } from "@inertiajs/inertia-vue3";
+import NProgress from 'nprogress'
+
 // Component
 import HeroSection from "@/Components/HeroSection.vue";
 import Currency from "@/Components/Currency.vue";
 import Footer from "@/Components/Footer.vue";
-import NProgress from 'nprogress'
-
 
 // Setter
 const url_img = location.origin + '/storage/'

@@ -59,6 +59,7 @@ const url_img = location.origin + '/storage/'
                                             class="h-5 w-5 rounded-full mt-4">
                                         </div>
                                         <p class="mt-4 text-sm text-gray-500">{{ cart.size.name }}</p>
+                                        <p class="mt-4 text-sm font-medium text-gray-500">{{ cart.quantity }}</p>
                                     </div>
 
                                     <div class="mt-4 flex items-end justify-end">
@@ -94,8 +95,9 @@ const url_img = location.origin + '/storage/'
                             </div>
 
                             <div class="mt-10">
-                                <button type="submit"
-                                    class="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">Checkout</button>
+                                <Link type="submit" :href="route('checkout.index')" as="button"
+                                    class="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
+                                Checkout</Link>
                             </div>
                         </section>
                     </form>
@@ -112,7 +114,7 @@ const url_img = location.origin + '/storage/'
                         src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                         alt="" />
                 </MenuButton>
-                <div v-else class="flex items-center md:ml-12">
+                <div v-else class="flex items-center -mt-2">
                     <Link :href="route('login')" class="text-base font-medium text-gray-500 hover:text-gray-900">Login
                     </Link>
                     <Link :href="route('register')"

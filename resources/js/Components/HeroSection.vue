@@ -33,8 +33,8 @@ const navigation = [
                                         <span class="sr-only">Your Company</span>
                                         <img alt="Your Company" class="h-8 w-auto sm:h-10"
                                             src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" />
-                                    </a>
-                                    <div class="-mr-2 flex items-center md:hidden">
+                                </a>
+                                <div class="-mr-2 flex items-center md:hidden">
                                         <PopoverButton
                                             class="inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
                                             <span class="sr-only">Open main menu</span>
@@ -48,10 +48,10 @@ const navigation = [
                                     class="font-medium text-gray-500 hover:text-gray-900">{{ item.name }}
                                 </Link>
 
-                                <Link v-if="!$page.props.auth.user" :href="route('login')"
-                                    class="font-medium text-indigo-600 hover:text-indigo-500">
-                                Log in</Link>
-                                <Cart />
+                                <!-- <Link v-if="!$page.props.auth.user" :href="route('login')"
+                                                                class="font-medium text-indigo-600 hover:text-indigo-500">
+                                                            Log in</Link> -->
+                                <Cart class="" />
                             </div>
                         </nav>
                     </div>
@@ -84,7 +84,7 @@ const navigation = [
                                 </div>
                                 <Link :href="route('login')"
                                     class="block w-full bg-gray-50 px-5 py-3 text-center font-medium text-indigo-600 hover:bg-gray-100">
-                                Log in sapi</Link>
+                                Log in</Link>
                             </div>
                         </PopoverPanel>
                     </transition>

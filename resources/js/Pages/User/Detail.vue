@@ -1,12 +1,18 @@
 
 <script setup>
-import { Head, Link, useForm, InertiaLink } from "@inertiajs/inertia-vue3";
+// Inertia
+import { Head, useForm } from "@inertiajs/inertia-vue3";
+import NProgress from 'nprogress'
+
 // Component
 import Navbar from "@/Components/Navbar.vue";
 import Currency from "@/Components/Currency.vue";
 import Banner from "@/Components/Banner.vue";
 import Footer from "@/Components/Footer.vue";
+import InputError from '@/Components/InputError.vue';
 
+
+// Icon
 import {
     Disclosure,
     DisclosureButton,
@@ -22,8 +28,6 @@ import {
 } from '@headlessui/vue'
 import { StarIcon } from '@heroicons/vue/20/solid'
 import { MinusIcon, PlusIcon } from '@heroicons/vue/24/outline'
-import InputError from '@/Components/InputError.vue';
-import NProgress from 'nprogress'
 
 // Setter
 const url_img = location.origin + '/storage/'

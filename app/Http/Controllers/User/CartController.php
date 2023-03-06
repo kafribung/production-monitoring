@@ -21,22 +21,24 @@ class CartController extends Controller
     {
         $data = $request->validate([
             'color_id' => 'bail|required|numeric',
-            'qunatity' => 'bail|required|numeric',
+            'quantity' => 'bail|required|numeric',
             'size_id' => 'bail|required|numeric',
             'product_id' => 'bail|required|numeric',
         ]);
 
         $product = Product::find($data['product_id'], ['id', 'slug', 'price']);
+
         // Set Price
-        $data['price'] = $product->price;
+        $data['price'] = $product->price * $data['quantity'];
 
         // Check cart
         $cart = Cart::where(function ($q) use ($data) {
             $q->where('color_id', $data['color_id'])
-                ->where('qunatity', $data['qunatity'])
+                ->where('quantity', $data['quantity'])
                 ->where('size_id', $data['size_id'])
                 ->where('product_id', $data['product_id']);
         })->first(['id']);
+        // End check cart
 
         DB::transaction(function () use ($data, $cart) {
             Cart::updateOrCreate(
@@ -56,8 +58,8 @@ class CartController extends Controller
      */
     public function destroy(Cart $cart)
     {
-        Session::flash('message', 'Product successfully remove from cart');
         $cart->delete();
+        Session::flash('message', 'Product successfully remove from cart');
         return back();
     }
 }

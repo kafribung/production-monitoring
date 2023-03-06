@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\User\{CartController, DetailController, HomeController};
+use App\Http\Controllers\User\{CartController, CheckoutController, DetailController, HomeController};
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -36,6 +36,11 @@ Route::get('detail/{product:slug}', DetailController::class)->name('detail.index
 Route::prefix('cart')->name('cart.')->middleware('verified')->controller(CartController::class)->group(function () {
     Route::post('', 'store')->name('store');
     Route::delete('/{cart}', 'destroy')->name('destroy');
+});
+
+Route::prefix('checkout')->name('checkout.')->middleware('verified')->controller(CheckoutController::class)->group(function () {
+    Route::get('', 'index')->name('index');
+    Route::get('district/{province_id}', 'showDistrict')->name('show_district');
 });
 
 require __DIR__ . '/auth.php';
