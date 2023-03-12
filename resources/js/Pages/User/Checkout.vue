@@ -9,7 +9,7 @@ import Currency from "@/Components/Currency.vue";
 import Banner from "@/Components/Banner.vue";
 
 // Template
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { RadioGroup, RadioGroupDescription, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
 import { CheckCircleIcon, TrashIcon } from '@heroicons/vue/20/solid'
 import { Inertia } from "@inertiajs/inertia";
@@ -22,31 +22,37 @@ const props = defineProps({
     provinces: Object,
     districts: Object,
     province_id: Number,
+    costs: Object
 })
 const province_id = ref(props.province_id);
 
+const cost = reactive({
+    shipping: props.costs[0].costs[0].cost[0].value
+})
+
+
 // Function
 function showDistrict(e) {
-    Inertia.get(route('checkout.show_district', e.target.value), {
-        // preserveScroll: (page) => Object.keys(page.props.errors).length,
-        // preserveState: (page) => Object.keys(page.props.errors).length,
+    Inertia.get(route('checkout.index', { province_id: e.target.value }), {
         preserveScroll: true,
         preserveState: true,
     })
 }
 
+function showCost(province_id, e) {
+    console.log(e);
+    Inertia.get(route('checkout.index', { province_id: province_id, dest_id: e.target.value }), {
+        preserveScroll: true,
+        preserveState: true,
+    })
+}
+console.log(cost.shipping);
 
-const deliveryMethods = [
-    { id: 1, title: 'Standard', turnaround: '4–10 business days', price: '$5.00' },
-    { id: 2, title: 'Express', turnaround: '2–5 business days', price: '$16.00' },
-]
 const paymentMethods = [
     { id: 'credit-card', title: 'Credit card' },
     { id: 'paypal', title: 'PayPal' },
     { id: 'etransfer', title: 'eTransfer' },
 ]
-
-const selectedDeliveryMethod = ref(deliveryMethods[0])
 
 // NProgress
 NProgress.start();
@@ -54,7 +60,6 @@ NProgress.done()
 </script>
 
 <template>
-    {{ provinces }}
     <!-- Head -->
 
     <Head title="Checkout" />
@@ -105,11 +110,19 @@ NProgress.done()
                                 </div>
                             </div>
 
-                            <div>
-                                <label for="province" class="block text-sm font-medium text-gray-700">Province</label>
+                            <div class="sm:col-span-2">
+                                <label for="phone"
+                                    class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-gray-700">Phone</label>
                                 <div class="mt-1">
-                                    {{ }}
+                                    <input type="number" name="phone" id="phone" autocomplete="tel"
+                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                                </div>
+                            </div>
 
+                            <div>
+                                <label for="province"
+                                    class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-gray-700">Province</label>
+                                <div class="mt-1">
                                     <select id="province" v-model="province_id" v-on:change="showDistrict($event)"
                                         autocomplete="province-name"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
@@ -123,9 +136,11 @@ NProgress.done()
                             </div>
 
                             <div>
-                                <label for="district" class="block text-sm font-medium text-gray-700">District</label>
+                                <label for="district"
+                                    class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-gray-700">District</label>
                                 <div class="mt-1">
-                                    <select id="district" v-on:change="" autocomplete="province-name"
+                                    <select id="district" v-on:change="showCost(province_id, $event)"
+                                        autocomplete="province-name"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                         <option v-for="item in districts" :key="item.city_id" :value="item.city_id">
                                             {{
@@ -135,44 +150,34 @@ NProgress.done()
                                     </select>
                                 </div>
                             </div>
-
-                            <div>
-                                <label for="postal-code" class="block text-sm font-medium text-gray-700">Postal code</label>
-                                <div class="mt-1">
-                                    <input type="text" name="postal-code" id="postal-code" autocomplete="postal-code"
-                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                                </div>
-                            </div>
-
-                            <div class="sm:col-span-2">
-                                <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
-                                <div class="mt-1">
-                                    <input type="text" name="phone" id="phone" autocomplete="tel"
-                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                                </div>
-                            </div>
                         </div>
                     </div>
 
-                    <div class="mt-10 border-t border-gray-200 pt-10">
-                        <RadioGroup v-model="selectedDeliveryMethod">
+                    <div v-if="costs" class="mt-10 border-t border-gray-200 pt-10">
+                        <RadioGroup v-model="cost.shipping">
                             <RadioGroupLabel class="text-lg font-medium text-gray-900">Delivery method</RadioGroupLabel>
-
                             <div class="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
-                                <RadioGroupOption as="template" v-for="deliveryMethod in deliveryMethods"
-                                    :key="deliveryMethod.id" :value="deliveryMethod" v-slot="{ checked, active }">
+                                <RadioGroupOption v-for="cost in costs[0].costs" as="template" :key="cost.service"
+                                    :value="cost.cost[0].value" v-slot="{ checked, active }">
                                     <div
                                         :class="[checked ? 'border-transparent' : 'border-gray-300', active ? 'ring-2 ring-indigo-500' : '', 'relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none']">
                                         <span class="flex flex-1">
                                             <span class="flex flex-col">
                                                 <RadioGroupLabel as="span" class="block text-sm font-medium text-gray-900">
-                                                    {{ deliveryMethod.title }}</RadioGroupLabel>
+                                                    {{ costs[0].name }} ({{ cost.service }})
+                                                </RadioGroupLabel>
                                                 <RadioGroupDescription as="span"
-                                                    class="mt-1 flex items-center text-sm text-gray-500">{{
-                                                        deliveryMethod.turnaround }}</RadioGroupDescription>
+                                                    class="mt-1 flex items-center text-sm text-gray-500">
+                                                    {{ cost.description }}
+                                                </RadioGroupDescription>
                                                 <RadioGroupDescription as="span"
-                                                    class="mt-6 text-sm font-medium text-gray-900">{{ deliveryMethod.price
-                                                    }}</RadioGroupDescription>
+                                                    class="mt-1 flex items-center text-sm text-gray-800">
+                                                    {{ cost.cost[0].etd }} days
+                                                </RadioGroupDescription>
+                                                <RadioGroupDescription as="span"
+                                                    class="mt-6 text-sm font-medium text-gray-900">
+                                                    <Currency :price="cost.cost[0].value" />
+                                                </RadioGroupDescription>
                                             </span>
                                         </span>
                                         <CheckCircleIcon v-if="checked" class="h-5 w-5 text-indigo-600"
@@ -288,7 +293,7 @@ NProgress.done()
                                         </p>
 
                                         <p class="ml-4 text-sm font-semibold text-gray-900">
-                                            {{ cart.qunatity }}
+                                            {{ cart.quantity }}
                                         </p>
                                     </div>
                                 </div>

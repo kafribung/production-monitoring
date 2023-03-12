@@ -32,7 +32,7 @@ const url_img = location.origin + '/storage/'
                 leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100"
                 leave-to-class="transform opacity-0 scale-95">
                 <MenuItems
-                    class="absolute right-0 z-10 mt-2 w-96 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    class="absolute right-0 z-50 mt-2 w-96 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <section class="p-4" aria-labelledby="cart-heading">
                         <ul role="list" class="divide-y divide-gray-200 border-t border-b border-gray-200">
                             <li v-for="(cart, index) in $page.props.carts.cart" :key="index" class="flex py-6">
@@ -75,11 +75,10 @@ const url_img = location.origin + '/storage/'
                         </ul>
                     </section>
 
-                    <form class="p-4">
+                    <form class="p-2">
                         <!-- Order summary -->
-                        <section aria-labelledby="summary-heading" class="mt-10">
+                        <section aria-labelledby="summary-heading">
                             <h2 id="summary-heading" class="sr-only">Order summary</h2>
-
                             <div>
                                 <dl class="space-y-4">
                                     <div class="flex items-center justify-between">

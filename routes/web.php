@@ -39,8 +39,9 @@ Route::prefix('cart')->name('cart.')->middleware('verified')->controller(CartCon
 });
 
 Route::prefix('checkout')->name('checkout.')->middleware('verified')->controller(CheckoutController::class)->group(function () {
-    Route::get('', 'index')->name('index');
+    Route::get('{province_id?}/{dest_id?}', 'index')->name('index');
     Route::get('district/{province_id}', 'showDistrict')->name('show_district');
+    Route::get('cost/{dest_id}', 'showCost')->name('show_cost');
 });
 
 require __DIR__ . '/auth.php';
