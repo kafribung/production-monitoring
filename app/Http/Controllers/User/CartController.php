@@ -46,7 +46,8 @@ class CartController extends Controller
                 $data
             );
         });
-        Session::flash('message', 'Product successfully added to cart');
+
+        Session::flash('message', 'Produk ditambahkan ke keranjang');
         return to_route('detail.index', $product);
     }
 

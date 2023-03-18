@@ -3,12 +3,18 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 
 class CheckoutController extends Controller
 {
+
+    public function __construct()
+    {
+        abort_if(Cart::where('status', false)->count() == 0, 404);
+    }
     /**
      * Display a listing of the resource.
      *

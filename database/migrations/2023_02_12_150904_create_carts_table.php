@@ -20,6 +20,7 @@ return new class() extends Migration
             $table->foreignId('size_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
             $table->smallInteger('quantity');
             $table->integer('price');
+            $table->boolean('status')->default(false);
 
             $table->foreignId('created_by')
                 ->constrained('users')

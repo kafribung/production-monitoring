@@ -40,7 +40,7 @@ const props = defineProps({
 // State
 const form = useForm({
     color_id: null,
-    qunatity: 1,
+    quantity: 1,
     size_id: props.product.sizes[0].id,
     product_id: props.product.id,
 })
@@ -173,7 +173,7 @@ NProgress.done()
                         <div class="flex justify-start">
                             <div class="mt-4">
                                 <label for="quantity" class="text-sm block mb-1 text-gray-600 ">Quantity</label>
-                                <select id="quantity" v-model="form.qunatity"
+                                <select id="quantity" v-model="form.quantity"
                                     class="rounded-md border border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
                                     <option v-for="n in 10" :value="n">{{ n }}</option>
                                 </select>

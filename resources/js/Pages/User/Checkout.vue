@@ -1,6 +1,6 @@
 <script setup>
 // Inertia
-import { Head, Link, useForm } from "@inertiajs/inertia-vue3";
+import { Head, Link, useForm, usePage } from "@inertiajs/inertia-vue3";
 import NProgress from 'nprogress'
 
 // Component
@@ -9,7 +9,7 @@ import Currency from "@/Components/Currency.vue";
 import Banner from "@/Components/Banner.vue";
 
 // Template
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { RadioGroup, RadioGroupDescription, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
 import { CheckCircleIcon, TrashIcon } from '@heroicons/vue/20/solid'
 import { Inertia } from "@inertiajs/inertia";
@@ -30,7 +30,7 @@ const province_id = ref(props.province_id);
 const dest_id = ref(props.dest_id);
 
 const cost = reactive({
-    shipping: null
+    shipping: null,
 })
 
 
@@ -49,19 +49,17 @@ function showCost(province_id, e) {
         preserveState: true,
     })
 }
-console.log(cost.shipping);
-
-const paymentMethods = [
-    { id: 'credit-card', title: 'Credit card' },
-    { id: 'paypal', title: 'PayPal' },
-    { id: 'etransfer', title: 'eTransfer' },
-]
-
 // State
 const form = useForm({
     address: null,
     phone: null
 })
+
+// Function
+const total = computed(() => {
+    return cost.shipping != null ? cost.shipping + usePage().props.value.carts.sub_total : null
+})
+
 
 // Submit handler
 function submit() {
@@ -187,6 +185,7 @@ NProgress.done()
                         </div>
                     </div>
 
+
                     <div v-if="costs" class="mt-10 border-t border-gray-200 pt-10">
                         <RadioGroup v-model="cost.shipping">
                             <RadioGroupLabel class="text-lg font-medium text-gray-900">Metode Pengiriman</RadioGroupLabel>
@@ -285,12 +284,17 @@ NProgress.done()
                                 </dd>
                             </div>
                             <div class="flex items-center justify-between">
-                                <dt class="text-sm">Shipping</dt>
-                                <dd class="text-sm font-medium text-gray-900">$5.00</dd>
+                                <dt class="text-sm">Pengiriman</dt>
+                                <dd class="text-sm font-medium text-gray-900">
+                                    <Currency :price="cost.shipping" />
+                                </dd>
                             </div>
                             <div class="flex items-center justify-between border-t border-gray-200 pt-6">
                                 <dt class="text-base font-medium">Total</dt>
-                                <dd class="text-base font-medium text-gray-900">$75.52</dd>
+                                <dd class="text-base font-medium text-gray-900">
+                                    <!-- <Currency :price="cost.shipping + $page.props.carts.sub_total" /> -->
+                                    <Currency :price="total" />
+                                </dd>
                             </div>
                         </dl>
 
