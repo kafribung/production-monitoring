@@ -66,7 +66,7 @@ const url_img = location.origin + '/storage/'
                                         <div class="ml-4">
                                             <Link :href="route('cart.destroy', cart.id)" method="delete"
                                                 class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
-                                            <span>Remove</span>
+                                            <span>Hapus</span>
                                             </Link>
                                         </div>
                                     </div>
@@ -89,14 +89,16 @@ const url_img = location.origin + '/storage/'
                                         </dd>
                                     </div>
                                 </dl>
-                                <p class="mt-1 text-sm text-gray-500">Shipping and taxes will be calculated
-                                    at checkout.</p>
+                                <p class="mt-1 text-sm text-gray-500">
+                                    Harga yang tercantum belum termasuk ongkos kirim, klik lihat sekarang.
+                                </p>
                             </div>
 
                             <div class="mt-10">
                                 <Link type="submit" :href="route('checkout.index')" as="button"
                                     class="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
-                                Checkout</Link>
+                                Lihat Keranjang
+                                </Link>
                             </div>
                         </section>
                     </form>

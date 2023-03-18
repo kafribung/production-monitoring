@@ -1,6 +1,6 @@
 <script setup>
 // Inertia
-import { Head, Link } from "@inertiajs/inertia-vue3";
+import { Head, Link, useForm } from "@inertiajs/inertia-vue3";
 import NProgress from 'nprogress'
 
 // Component
@@ -22,12 +22,15 @@ const props = defineProps({
     provinces: Object,
     districts: Object,
     province_id: Number,
+    dest_id: Number,
     costs: Object
 })
+
 const province_id = ref(props.province_id);
+const dest_id = ref(props.dest_id);
 
 const cost = reactive({
-    shipping: props.costs[0].costs[0].cost[0].value
+    shipping: null
 })
 
 
@@ -54,6 +57,33 @@ const paymentMethods = [
     { id: 'etransfer', title: 'eTransfer' },
 ]
 
+// State
+const form = useForm({
+    address: null,
+    phone: null
+})
+
+// Submit handler
+function submit() {
+    window.snap.pay('16125dce-c440-426a-a835-7417b7c33ce4', {
+        onSuccess: function (result) {
+            /* You may add your own implementation here */
+            alert("payment success!"); console.log(result);
+        },
+        onPending: function (result) {
+            /* You may add your own implementation here */
+            alert("wating your payment!"); console.log(result);
+        },
+        onError: function (result) {
+            /* You may add your own implementation here */
+            alert("payment failed!"); console.log(result);
+        },
+        onClose: function () {
+            /* You may add your own implementation here */
+            alert('you closed the popup without finishing the payment');
+        }
+    })
+}
 // NProgress
 NProgress.start();
 NProgress.done()
@@ -75,13 +105,13 @@ NProgress.done()
         <div class="mx-auto max-w-2xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8">
             <h2 class="sr-only">Checkout</h2>
 
-            <form class="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16">
+            <form @submit.prevent="submit" class="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16">
                 <div>
                     <div>
-                        <h2 class="text-lg font-medium text-gray-900">Contact information</h2>
+                        <h2 class="text-lg font-medium text-gray-900">Informasi Kontak</h2>
 
                         <div class="mt-4">
-                            <label for="email-address" class="block text-sm font-medium text-gray-700">Email address</label>
+                            <label for="email-address" class="block text-sm font-medium text-gray-700">Email</label>
                             <div class="mt-1">
                                 <input type="email" id="email-address" :value="$page.props.auth.user.email" disabled
                                     autocomplete="email"
@@ -91,11 +121,11 @@ NProgress.done()
                     </div>
 
                     <div class="mt-10 border-t border-gray-200 pt-10">
-                        <h2 class="text-lg font-medium text-gray-900">Shipping information</h2>
+                        <h2 class="text-lg font-medium text-gray-900">Informasi Pengiriman</h2>
 
                         <div class="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
                             <div class="sm:col-span-2">
-                                <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                                <label for="name" class="block text-sm font-medium text-gray-700">Nama</label>
                                 <div class="mt-1">
                                     <input type="text" name="name" id="name" :value="$page.props.auth.user.name" disabled
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
@@ -103,29 +133,32 @@ NProgress.done()
                             </div>
 
                             <div class="sm:col-span-2">
-                                <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
+                                <label for="address" class="block text-sm font-medium text-gray-700">Alamat</label>
                                 <div class="mt-1">
-                                    <textarea name="address" id="address" autocomplete="street-address"
+                                    <textarea name="address" v-model="form.address" id="address"
+                                        autocomplete="street-address"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                 </div>
                             </div>
 
                             <div class="sm:col-span-2">
                                 <label for="phone"
-                                    class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-gray-700">Phone</label>
+                                    class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-gray-700">Nomor
+                                    HP</label>
                                 <div class="mt-1">
-                                    <input type="number" name="phone" id="phone" autocomplete="tel"
+                                    <input type="number" name="phone" v-model="form.phone" id="phone" autocomplete="tel"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                 </div>
                             </div>
 
                             <div>
                                 <label for="province"
-                                    class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-gray-700">Province</label>
+                                    class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-gray-700">Provinsi</label>
                                 <div class="mt-1">
                                     <select id="province" v-model="province_id" v-on:change="showDistrict($event)"
                                         autocomplete="province-name"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <option :value="null" disabled>Pilih Provinsi</option>
                                         <option v-for="item in provinces" :key="item.province_id" :value="item.province_id">
                                             {{
                                                 item.province
@@ -137,11 +170,12 @@ NProgress.done()
 
                             <div>
                                 <label for="district"
-                                    class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-gray-700">District</label>
+                                    class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-gray-700">Kabupaten</label>
                                 <div class="mt-1">
-                                    <select id="district" v-on:change="showCost(province_id, $event)"
+                                    <select id="district" v-model="dest_id" v-on:change="showCost(province_id, $event)"
                                         autocomplete="province-name"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                        <option :value="null" disabled>Pilih Kabupaten</option>
                                         <option v-for="item in districts" :key="item.city_id" :value="item.city_id">
                                             {{
                                                 item.city_name
@@ -155,7 +189,7 @@ NProgress.done()
 
                     <div v-if="costs" class="mt-10 border-t border-gray-200 pt-10">
                         <RadioGroup v-model="cost.shipping">
-                            <RadioGroupLabel class="text-lg font-medium text-gray-900">Delivery method</RadioGroupLabel>
+                            <RadioGroupLabel class="text-lg font-medium text-gray-900">Metode Pengiriman</RadioGroupLabel>
                             <div class="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
                                 <RadioGroupOption v-for="cost in costs[0].costs" as="template" :key="cost.service"
                                     :value="cost.cost[0].value" v-slot="{ checked, active }">
@@ -172,7 +206,7 @@ NProgress.done()
                                                 </RadioGroupDescription>
                                                 <RadioGroupDescription as="span"
                                                     class="mt-1 flex items-center text-sm text-gray-800">
-                                                    {{ cost.cost[0].etd }} days
+                                                    Estimasi {{ cost.cost[0].etd }} hari
                                                 </RadioGroupDescription>
                                                 <RadioGroupDescription as="span"
                                                     class="mt-6 text-sm font-medium text-gray-900">
@@ -191,67 +225,11 @@ NProgress.done()
                         </RadioGroup>
                     </div>
 
-                    <!-- Payment -->
-                    <div class="mt-10 border-t border-gray-200 pt-10">
-                        <h2 class="text-lg font-medium text-gray-900">Payment</h2>
-
-                        <fieldset class="mt-4">
-                            <legend class="sr-only">Payment type</legend>
-                            <div class="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
-                                <div v-for="(paymentMethod, paymentMethodIdx) in paymentMethods" :key="paymentMethod.id"
-                                    class="flex items-center">
-                                    <input v-if="paymentMethodIdx === 0" :id="paymentMethod.id" name="payment-type"
-                                        type="radio" checked=""
-                                        class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                    <input v-else :id="paymentMethod.id" name="payment-type" type="radio"
-                                        class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                    <label :for="paymentMethod.id" class="ml-3 block text-sm font-medium text-gray-700">{{
-                                        paymentMethod.title }}</label>
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <div class="mt-6 grid grid-cols-4 gap-y-6 gap-x-4">
-                            <div class="col-span-4">
-                                <label for="card-number" class="block text-sm font-medium text-gray-700">Card number</label>
-                                <div class="mt-1">
-                                    <input type="text" id="card-number" name="card-number" autocomplete="cc-number"
-                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                                </div>
-                            </div>
-
-                            <div class="col-span-4">
-                                <label for="name-on-card" class="block text-sm font-medium text-gray-700">Name on
-                                    card</label>
-                                <div class="mt-1">
-                                    <input type="text" id="name-on-card" name="name-on-card" autocomplete="cc-name"
-                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                                </div>
-                            </div>
-
-                            <div class="col-span-3">
-                                <label for="expiration-date" class="block text-sm font-medium text-gray-700">Expiration date
-                                    (MM/YY)</label>
-                                <div class="mt-1">
-                                    <input type="text" name="expiration-date" id="expiration-date" autocomplete="cc-exp"
-                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                                </div>
-                            </div>
-
-                            <div>
-                                <label for="cvc" class="block text-sm font-medium text-gray-700">CVC</label>
-                                <div class="mt-1">
-                                    <input type="text" name="cvc" id="cvc" autocomplete="csc"
-                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Order summary -->
                 <div class="mt-10 lg:mt-0">
-                    <h2 class="text-lg font-medium text-gray-900">Order summary</h2>
+                    <h2 class="text-lg font-medium text-gray-900">Detail Pesanan</h2>
 
                     <div class="mt-4 rounded-lg border border-gray-200 bg-white shadow-sm">
                         <h3 class="sr-only">Items in your cart</h3>
@@ -318,8 +296,9 @@ NProgress.done()
 
                         <div class="border-t border-gray-200 py-6 px-4 sm:px-6">
                             <button type="submit"
-                                class="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">Confirm
-                                order</button>
+                                class="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
+                                Buat Pesanan
+                            </button>
                         </div>
                     </div>
                 </div>

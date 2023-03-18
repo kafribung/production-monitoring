@@ -55,7 +55,6 @@ function submit() {
     )
 }
 
-
 // NProgress
 NProgress.start();
 NProgress.done()
