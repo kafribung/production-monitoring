@@ -7,12 +7,15 @@ import NProgress from 'nprogress'
 import Navbar from "@/Components/Navbar.vue";
 import Currency from "@/Components/Currency.vue";
 import Banner from "@/Components/Banner.vue";
+import InputError from '@/Components/InputError.vue';
+
 
 // Template
 import { ref, reactive, computed } from 'vue'
 import { RadioGroup, RadioGroupDescription, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
 import { CheckCircleIcon, TrashIcon } from '@heroicons/vue/20/solid'
 import { Inertia } from "@inertiajs/inertia";
+
 
 // Setter
 const url_img = location.origin + '/storage/'
@@ -33,7 +36,6 @@ const cost = reactive({
     shipping: null,
 })
 
-
 // Function
 function showDistrict(e) {
     Inertia.get(route('checkout.index', { province_id: e.target.value }), {
@@ -43,48 +45,56 @@ function showDistrict(e) {
 }
 
 function showCost(province_id, e) {
-    console.log(e);
     Inertia.get(route('checkout.index', { province_id: province_id, dest_id: e.target.value }), {
         preserveScroll: true,
         preserveState: true,
     })
 }
-// State
-const form = useForm({
-    address: null,
-    phone: null
-})
 
-// Function
 const total = computed(() => {
     return cost.shipping != null ? cost.shipping + usePage().props.value.carts.sub_total : null
 })
 
+const shipping = computed(() => {
+    return cost.shipping != null ? cost.shipping : null
+})
+
+// State
+const form = useForm({
+    address: null,
+    phone: null,
+    province_id: province_id.value,
+    district_id: dest_id.value,
+    subtotal: usePage().props.value.carts.sub_total,
+    shipping: shipping,
+    total: total
+})
 
 // Submit handler
 function submit() {
-    window.snap.pay('16125dce-c440-426a-a835-7417b7c33ce4', {
-        onSuccess: function (result) {
-            /* You may add your own implementation here */
-            alert("payment success!"); console.log(result);
-        },
-        onPending: function (result) {
-            /* You may add your own implementation here */
-            alert("wating your payment!"); console.log(result);
-        },
-        onError: function (result) {
-            /* You may add your own implementation here */
-            alert("payment failed!"); console.log(result);
-        },
-        onClose: function () {
-            /* You may add your own implementation here */
-            alert('you closed the popup without finishing the payment');
-        }
-    })
+    // window.snap.pay('16125dce-c440-426a-a835-7417b7c33ce4', {
+    //     onSuccess: function (result) {
+    //         /* You may add your own implementation here */
+    //         alert("payment success!"); console.log(result);
+    //     },
+    //     onPending: function (result) {
+    //         /* You may add your own implementation here */
+    //         alert("wating your payment!"); console.log(result);
+    //     },
+    //     onError: function (result) {
+    //         /* You may add your own implementation here */
+    //         alert("payment failed!"); console.log(result);
+    //     },
+    //     onClose: function () {
+    //         /* You may add your own implementation here */
+    //         alert('you closed the popup without finishing the payment');
+    //     }
+    // })
 }
 // NProgress
 NProgress.start();
 NProgress.done()
+
 </script>
 
 <template>
@@ -103,7 +113,8 @@ NProgress.done()
         <div class="mx-auto max-w-2xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8">
             <h2 class="sr-only">Checkout</h2>
 
-            <form @submit.prevent="submit" class="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16">
+            <form @submit.prevent="form.post(route('checkout.store'))"
+                class="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16">
                 <div>
                     <div>
                         <h2 class="text-lg font-medium text-gray-900">Informasi Kontak</h2>
@@ -131,11 +142,13 @@ NProgress.done()
                             </div>
 
                             <div class="sm:col-span-2">
-                                <label for="address" class="block text-sm font-medium text-gray-700">Alamat</label>
+                                <label for="address"
+                                    class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-gray-700">Alamat</label>
                                 <div class="mt-1">
                                     <textarea name="address" v-model="form.address" id="address"
                                         autocomplete="street-address"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                                    <InputError class="mt-2" :message="form.errors.address" />
                                 </div>
                             </div>
 
@@ -144,8 +157,10 @@ NProgress.done()
                                     class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-gray-700">Nomor
                                     HP</label>
                                 <div class="mt-1">
-                                    <input type="number" name="phone" v-model="form.phone" id="phone" autocomplete="tel"
+                                    <input type="number" name="phone" v-model="form.phone" maxlength="12" id="phone"
+                                        autocomplete="tel"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                                    <InputError class="mt-2" :message="form.errors.phone" />
                                 </div>
                             </div>
 
@@ -162,7 +177,10 @@ NProgress.done()
                                                 item.province
                                             }}
                                         </option>
+
                                     </select>
+                                    <InputError class="mt-2" :message="form.errors.province_id" />
+
                                 </div>
                             </div>
 
@@ -180,15 +198,17 @@ NProgress.done()
                                             }}
                                         </option>
                                     </select>
+                                    <InputError class="mt-2" :message="form.errors.district_id" />
                                 </div>
                             </div>
                         </div>
                     </div>
 
-
                     <div v-if="costs" class="mt-10 border-t border-gray-200 pt-10">
                         <RadioGroup v-model="cost.shipping">
-                            <RadioGroupLabel class="text-lg font-medium text-gray-900">Metode Pengiriman</RadioGroupLabel>
+                            <RadioGroupLabel
+                                class="after:content-['*'] after:ml-0.5 after:text-red-500 text-lg font-medium text-gray-900">
+                                Metode Pengiriman</RadioGroupLabel>
                             <div class="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
                                 <RadioGroupOption v-for="cost in costs[0].costs" as="template" :key="cost.service"
                                     :value="cost.cost[0].value" v-slot="{ checked, active }">
@@ -220,10 +240,10 @@ NProgress.done()
                                             aria-hidden="true" />
                                     </div>
                                 </RadioGroupOption>
+                                <InputError class="mt-2" :message="form.errors.shipping" />
                             </div>
                         </RadioGroup>
                     </div>
-
                 </div>
 
                 <!-- Order summary -->
@@ -292,7 +312,6 @@ NProgress.done()
                             <div class="flex items-center justify-between border-t border-gray-200 pt-6">
                                 <dt class="text-base font-medium">Total</dt>
                                 <dd class="text-base font-medium text-gray-900">
-                                    <!-- <Currency :price="cost.shipping + $page.props.carts.sub_total" /> -->
                                     <Currency :price="total" />
                                 </dd>
                             </div>

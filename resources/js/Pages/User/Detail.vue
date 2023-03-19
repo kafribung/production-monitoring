@@ -11,7 +11,6 @@ import Banner from "@/Components/Banner.vue";
 import Footer from "@/Components/Footer.vue";
 import InputError from '@/Components/InputError.vue';
 
-
 // Icon
 import {
     Disclosure,

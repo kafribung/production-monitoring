@@ -4,7 +4,9 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
+use App\Models\Checkout;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 
@@ -121,7 +123,36 @@ class CheckoutController extends Controller
      */
     public function store(Request $request)
     {
-        abort(404);
+
+        $data = $request->validate([
+            'address' => 'bail|required|string',
+            'phone' => 'bail|required|numeric|max_digits:13',
+            'province_id' => 'bail|required|numeric',
+            'district_id' => 'bail|required|numeric',
+            'subtotal' => 'bail|required|numeric',
+            'shipping' => 'bail|required|numeric',
+            'total' => 'bail|required|numeric',
+        ]);
+
+        $data['status'] = 'pending';
+        $carts = Cart::where([['status', false], ['created_by', auth()->id()]])->get(['id']);
+
+        $data['order_number'] =  date('Ymd') . time() .  strtoupper(substr(uniqid(sha1(time())), 0, 4));
+
+        DB::transaction(function () use ($data, $carts) {
+            // Insert to checkouts table
+            $checkout = Checkout::create($data);
+
+            // Insert to checkout_carts table
+            $carts->each(fn ($cart) =>  $checkout->checkoutCarts()->create([
+                'cart_id' => $cart->id
+            ]));
+
+            // Update carts table
+            $carts->each(fn ($cart) =>  $cart->update([
+                'status' => true
+            ]));
+        });
     }
 
     /**
@@ -131,7 +162,9 @@ class CheckoutController extends Controller
      */
     public function show()
     {
-        //
+        return Inertia::render('User/CheckoutDetail', [
+            'checkouts' => Checkout::where('created_by', auth()->id())->latest()->get()
+        ]);
     }
 
     /**
