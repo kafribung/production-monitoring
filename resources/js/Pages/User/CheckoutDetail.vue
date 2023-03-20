@@ -1,15 +1,17 @@
 <script setup>
 // Inertia
-import { Head, Link } from "@inertiajs/inertia-vue3";
+import { Head, Link, usePage } from "@inertiajs/inertia-vue3";
 import NProgress from 'nprogress'
 
 // Component
 import Navbar from "@/Components/Navbar.vue";
 import Banner from "@/Components/Banner.vue";
 import Footer from "@/Components/Footer.vue";
+import Currency from "@/Components/Currency.vue";
 
 import { ref, reactive } from 'vue'
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
+import axios from "axios";
 
 // Setter
 const url_img = location.origin + '/storage/'
@@ -26,10 +28,87 @@ const obj = reactive({
 function openModal(checkout_carts) {
     obj.checkout_carts = checkout_carts
     obj.open = !obj.open
+
+
 }
 
+
+
+
+// console.log(usePage().props.value.auth.user.email);
 // Submit handler
-function submit() {
+function submit(checkout) {
+    let item_details = []
+    checkout.checkout_carts.forEach(function (item, index) {
+        let data = {
+            'id': item.cart.id,
+            'name': item.cart.product.name,
+            'price': item.cart.price,
+            'quantity': item.cart.quantity,
+            'color': item.cart.color.name,
+            'size': item.cart.size.name,
+        }
+
+        item_details.push(data)
+    })
+
+    item_details = Object.assign({}, item_details)
+
+    axios.post('https://app.sandbox.midtrans.com/snap/v1/transactions', {
+        transaction_details: {
+            order_id: checkout.order_number,
+            gross_amount: checkout.total
+        },
+        credit_card: {
+            secure: true
+        },
+        // "item_details": [item_details],
+        // "customer_details": {
+        //     "first_name": "Pembeli",
+        //     "last_name": usePage().props.value.auth.user.name,
+        //     "email": usePage().props.value.auth.user.email,
+        //     "phone": "+628123456",
+        //     "billing_address": {
+        //         "first_name": "TEST",
+        //         "last_name": "MIDTRANSER",
+        //         "email": "noreply@example.com",
+        //         "phone": "081 2233 44-55",
+        //         "address": "Sudirman",
+        //         "city": "Jakarta",
+        //         "postal_code": "12190",
+        //         "country_code": "IDN"
+        //     },
+        //     "shipping_address": {
+        //         "first_name": "TEST",
+        //         "last_name": "MIDTRANSER",
+        //         "email": "noreply@example.com",
+        //         "phone": "0812345678910",
+        //         "address": "Sudirman",
+        //         "city": "Jakarta",
+        //         "postal_code": "12190",
+        //         "country_code": "IDN"
+        //     }
+        // }
+    }, {
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Basic U0ItTWlkLXNlcnZlci1nSmh3b284V3FOOWFCelJVbEM5LXdSbVg6',
+        }
+    })
+        .then(response => {
+            // Handle response
+            console.log(response.data);
+        })
+        .catch(err => {
+            // Handle errors
+            console.log(err);
+        });
+
+
     // window.snap.pay('16125dce-c440-426a-a835-7417b7c33ce4', {
     //     onSuccess: function (result) {
     //         /* You may add your own implementation here */
@@ -209,13 +288,13 @@ NProgress.done()
                                         {{ checkout.address }}
                                     </td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                        {{ checkout.subtotal }}
+                                        <Currency :price="checkout.subtotal" />
                                     </td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                        {{ checkout.shipping }}
+                                        <Currency :price="checkout.shipping" />
                                     </td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                        {{ checkout.total }}
+                                        <Currency :price="checkout.total" />
                                     </td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                         <span class="inline-flex rounded-full px-2 text-xs font-semibold leading-5 "
@@ -231,7 +310,7 @@ NProgress.done()
 
                                         <button type="button"
                                             class="rounded bg-white py-1 ml-2 px-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-indigo-300 hover:bg-indigo-50"
-                                            @click="submit()">Bayar</button>
+                                            @click="submit(checkout)">Bayar</button>
                                     </td>
                                 </tr>
                             </tbody>

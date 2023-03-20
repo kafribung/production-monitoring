@@ -9,13 +9,11 @@ import Currency from "@/Components/Currency.vue";
 import Banner from "@/Components/Banner.vue";
 import InputError from '@/Components/InputError.vue';
 
-
 // Template
 import { ref, reactive, computed } from 'vue'
 import { RadioGroup, RadioGroupDescription, RadioGroupLabel, RadioGroupOption } from '@headlessui/vue'
 import { CheckCircleIcon, TrashIcon } from '@heroicons/vue/20/solid'
 import { Inertia } from "@inertiajs/inertia";
-
 
 // Setter
 const url_img = location.origin + '/storage/'
@@ -73,7 +71,6 @@ const form = useForm({
 // NProgress
 NProgress.start();
 NProgress.done()
-
 </script>
 
 <template>
@@ -308,5 +305,3 @@ NProgress.done()
         </div>
     </div>
 </template>
-
-
