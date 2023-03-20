@@ -24,4 +24,9 @@ class CheckoutCart extends Model
     {
         return $this->belongsTo(Checkout::class);
     }
+
+    public function cart()
+    {
+        return $this->belongsTo(Cart::class);
+    }
 }

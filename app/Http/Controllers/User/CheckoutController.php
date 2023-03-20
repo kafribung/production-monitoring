@@ -15,7 +15,7 @@ class CheckoutController extends Controller
 
     public function __construct()
     {
-        abort_if(Cart::where('status', false)->count() == 0, 404);
+        // abort_if(Cart::where('status', false)->count() == 0, 404);
     }
     /**
      * Display a listing of the resource.
@@ -123,7 +123,6 @@ class CheckoutController extends Controller
      */
     public function store(Request $request)
     {
-
         $data = $request->validate([
             'address' => 'bail|required|string',
             'phone' => 'bail|required|numeric|max_digits:13',
@@ -153,6 +152,8 @@ class CheckoutController extends Controller
                 'status' => true
             ]));
         });
+
+        return to_route('checkout.show');
     }
 
     /**
@@ -163,7 +164,26 @@ class CheckoutController extends Controller
     public function show()
     {
         return Inertia::render('User/CheckoutDetail', [
-            'checkouts' => Checkout::where('created_by', auth()->id())->latest()->get()
+            'checkouts' => Checkout::with([
+                'createdBy:id,name,email',
+                'checkoutCarts.cart.product:id,name,slug',
+                'checkoutCarts.cart.product.oldestImage:id,images.product_id,name',
+                'checkoutCarts.cart.color:id,hexa',
+                'checkoutCarts.cart.size:id,name'
+            ])
+                ->where('created_by', auth()->id())
+                ->latest()
+                ->get([
+                    'id',
+                    'order_number',
+                    'address',
+                    'phone',
+                    'subtotal',
+                    'shipping',
+                    'total',
+                    'status',
+                    'created_by'
+                ])
         ]);
     }
 

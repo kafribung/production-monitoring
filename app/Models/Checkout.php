@@ -24,4 +24,9 @@ class Checkout extends Model
     {
         return $this->hasMany(CheckoutCart::class, 'checkout_id');
     }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }

@@ -70,27 +70,6 @@ const form = useForm({
     total: total
 })
 
-// Submit handler
-function submit() {
-    // window.snap.pay('16125dce-c440-426a-a835-7417b7c33ce4', {
-    //     onSuccess: function (result) {
-    //         /* You may add your own implementation here */
-    //         alert("payment success!"); console.log(result);
-    //     },
-    //     onPending: function (result) {
-    //         /* You may add your own implementation here */
-    //         alert("wating your payment!"); console.log(result);
-    //     },
-    //     onError: function (result) {
-    //         /* You may add your own implementation here */
-    //         alert("payment failed!"); console.log(result);
-    //     },
-    //     onClose: function () {
-    //         /* You may add your own implementation here */
-    //         alert('you closed the popup without finishing the payment');
-    //     }
-    // })
-}
 // NProgress
 NProgress.start();
 NProgress.done()
