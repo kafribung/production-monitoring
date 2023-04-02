@@ -9,9 +9,11 @@ import Banner from "@/Components/Banner.vue";
 import Footer from "@/Components/Footer.vue";
 import Currency from "@/Components/Currency.vue";
 
-import { ref, reactive } from 'vue'
+import { reactive } from 'vue'
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import axios from "axios";
+import { Inertia } from "@inertiajs/inertia";
+import CheckoutPending from "@/Components/CheckoutPending.vue";
 
 // Setter
 const url_img = location.origin + '/storage/'
@@ -22,111 +24,133 @@ const props = defineProps({
 
 const obj = reactive({
     checkout_carts: null,
-    open: false
+    open: false,
+    transaction: {},
+    open_checkout_pending: false
 })
 // Function
 function openModal(checkout_carts) {
     obj.checkout_carts = checkout_carts
     obj.open = !obj.open
-
-
 }
 
-
-
-
-// console.log(usePage().props.value.auth.user.email);
 // Submit handler
-function submit(checkout) {
+async function submit(checkout) {
+    // Add item details count
     let item_details = []
-    checkout.checkout_carts.forEach(function (item, index) {
-        let data = {
+    checkout.checkout_carts.forEach(function (item) {
+        let item_detail = {
             'id': item.cart.id,
             'name': item.cart.product.name,
             'price': item.cart.price,
             'quantity': item.cart.quantity,
             'color': item.cart.color.name,
             'size': item.cart.size.name,
+            'subtotal': checkout.subtotal,
+            'shipping': checkout.shipping,
         }
-
-        item_details.push(data)
+        item_details.push(item_detail)
     })
 
-    item_details = Object.assign({}, item_details)
+    // Add shipping count
+    const shipping = {
+        "id": Math.random(),
+        "price": checkout.shipping,
+        "quantity": 1,
+        "name": "Shipping"
+    }
 
-    axios.post('https://app.sandbox.midtrans.com/snap/v1/transactions', {
-        transaction_details: {
-            order_id: checkout.order_number,
-            gross_amount: checkout.total
-        },
-        credit_card: {
-            secure: true
-        },
-        // "item_details": [item_details],
-        // "customer_details": {
-        //     "first_name": "Pembeli",
-        //     "last_name": usePage().props.value.auth.user.name,
-        //     "email": usePage().props.value.auth.user.email,
-        //     "phone": "+628123456",
-        //     "billing_address": {
-        //         "first_name": "TEST",
-        //         "last_name": "MIDTRANSER",
-        //         "email": "noreply@example.com",
-        //         "phone": "081 2233 44-55",
-        //         "address": "Sudirman",
-        //         "city": "Jakarta",
-        //         "postal_code": "12190",
-        //         "country_code": "IDN"
-        //     },
-        //     "shipping_address": {
-        //         "first_name": "TEST",
-        //         "last_name": "MIDTRANSER",
-        //         "email": "noreply@example.com",
-        //         "phone": "0812345678910",
-        //         "address": "Sudirman",
-        //         "city": "Jakarta",
-        //         "postal_code": "12190",
-        //         "country_code": "IDN"
-        //     }
-        // }
-    }, {
+    item_details.push(shipping)
+
+    const headers = {
         headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
-            "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-            'Accept': 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': 'Basic U0ItTWlkLXNlcnZlci1nSmh3b284V3FOOWFCelJVbEM5LXdSbVg6',
+            Accept: "application/json",
+            "Content-Type": "application/json",
         }
+    }
+    const data = {
+        "auth": {
+            "id": usePage().props.value.auth.user.id
+        },
+        "transaction_details": {
+            "order_id": checkout.order_number,
+            "gross_amount": checkout.total
+        },
+        "credit_card": {
+            "secure": true
+        },
+        "item_details": item_details,
+        "customer_details": {
+            "first_name": "Costumer",
+            "last_name": usePage().props.value.auth.user.name,
+            "email": usePage().props.value.auth.user.email,
+            "phone": checkout.phone,
+            "billing_address": {
+                "first_name": "Costumer",
+                "last_name": usePage().props.value.auth.user.name,
+                "email": usePage().props.value.auth.user.email,
+                "phone": checkout.phone,
+                "address": checkout.address,
+                "province_id": checkout.province_id,
+                "district_id": checkout.district_id,
+            },
+            "shipping_address": {
+                "first_name": "Costumer",
+                "last_name": usePage().props.value.auth.user.name,
+                "email": usePage().props.value.auth.user.email,
+                "phone": checkout.phone,
+                "address": checkout.address,
+                "province_id": checkout.province_id,
+                "district_id": checkout.district_id,
+            }
+        }
+    }
+
+    try {
+        const response = await axios.post('http://127.0.0.1:8000/api/midtrans', data, headers)
+
+        if (response.data.data.token) {
+            window.snap.pay(response.data.data.token, {
+                onSuccess: function (result) {
+                    /* You may add your own implementation here */
+                    alert("payment success!"); console.log(result);
+                },
+                onPending: function (result) {
+                    /* You may add your own implementation here */
+                    alert("wating your payment!"); console.log(result);
+                },
+                onError: function (result) {
+                    /* You may add your own implementation here */
+                    alert("payment failed!"); console.log(result);
+                },
+                onClose: function () {
+                    /* You may add your own implementation here */
+                    alert('you closed the popup without finishing the payment');
+                }
+            })
+        }
+
+        // Set data
+        obj.transaction = response.data.data
+
+        // Reload page if not success or pending
+        if (obj.transaction.transaction_status != 'success' || obj.transaction.transaction_status != 'pending')
+            return location.reload()
+
+        // Trigger modal checkout pending
+        obj.open_checkout_pending = !obj.open_checkout_pending
+
+        console.log(response);
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+function destroy(checkout_id) {
+    Inertia.delete(`/checkout/${checkout_id}`, {
+        onBefore: () => confirm('Apakah anda setuju menghapus orderan?'),
     })
-        .then(response => {
-            // Handle response
-            console.log(response.data);
-        })
-        .catch(err => {
-            // Handle errors
-            console.log(err);
-        });
-
-
-    // window.snap.pay('16125dce-c440-426a-a835-7417b7c33ce4', {
-    //     onSuccess: function (result) {
-    //         /* You may add your own implementation here */
-    //         alert("payment success!"); console.log(result);
-    //     },
-    //     onPending: function (result) {
-    //         /* You may add your own implementation here */
-    //         alert("wating your payment!"); console.log(result);
-    //     },
-    //     onError: function (result) {
-    //         /* You may add your own implementation here */
-    //         alert("payment failed!"); console.log(result);
-    //     },
-    //     onClose: function () {
-    //         /* You may add your own implementation here */
-    //         alert('you closed the popup without finishing the payment');
-    //     }
-    // })
 }
 
 // NProgress
@@ -138,14 +162,17 @@ NProgress.done()
     <!-- Head -->
 
     <Head title="Detail" />
-    <!-- <Head :title="`Detail ${product.name}`" /> -->
 
     <!-- Navbar -->
     <Navbar />
 
-    <!-- Modal -->
-    <TransitionRoot as="template" :show="obj.open">
+    <!-- Modal Checkout Pending -->
+    <CheckoutPending v-if="obj.transaction.transaction_status == 'pending'" :open="obj.open_checkout_pending"
+        :transaction="obj.transaction" />
+    <!-- End Modal Checkout Pending -->
 
+    <!-- Modal Item Cart-->
+    <TransitionRoot as="template" :show="obj.open">
         <Dialog as="div" class="relative z-10" @close="obj.open = false">
             <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100"
                 leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
@@ -298,7 +325,7 @@ NProgress.done()
                                     </td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                         <span class="inline-flex rounded-full px-2 text-xs font-semibold leading-5 "
-                                            :class="{ 'bg-green-100  text-green-800': checkout.status == 'success', 'bg-gray-100  text-gray-800': checkout.status == 'pending', 'bg-red-100  text-red-800': checkout.status == 'error' }">
+                                            :class="{ 'bg-green-100  text-green-800': checkout.status == 'success', 'bg-gray-100  text-gray-800': checkout.status == 'pending', 'bg-red-100  text-red-800': checkout.status == 'error' || checkout.status == 'deny' || checkout.status == 'cancel' || checkout.status == 'expire' }">
                                             {{ checkout.status }}
                                         </span>
                                     </td>
@@ -311,6 +338,10 @@ NProgress.done()
                                         <button type="button"
                                             class="rounded bg-white py-1 ml-2 px-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-indigo-300 hover:bg-indigo-50"
                                             @click="submit(checkout)">Bayar</button>
+
+                                        <button type="button"
+                                            class="rounded bg-white py-1 ml-2 px-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-red-300 hover:bg-red-50"
+                                            @click="destroy(checkout.id)">Hapus</button>
                                     </td>
                                 </tr>
                             </tbody>

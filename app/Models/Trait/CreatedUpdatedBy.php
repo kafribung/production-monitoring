@@ -2,6 +2,8 @@
 
 namespace App\Models\Trait;
 
+use Illuminate\Support\Facades\Auth;
+
 trait CreatedUpdatedBy
 {
     public static function bootCreatedUpdatedBy()
@@ -19,7 +21,7 @@ trait CreatedUpdatedBy
         // updating updated_by when model is updated
         static::updating(function ($model) {
             if (!$model->isDirty('updated_by')) {
-                $model->updated_by = auth()->user()->id;
+                // $model->updated_by = auth()->user()->id;
             }
         });
     }

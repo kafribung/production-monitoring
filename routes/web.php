@@ -41,6 +41,7 @@ Route::prefix('cart')->name('cart.')->middleware('verified')->controller(CartCon
 Route::prefix('checkout')->name('checkout.')->middleware('verified')->controller(CheckoutController::class)->group(function () {
     Route::get('show', 'show')->name('show');
     Route::post('', 'store')->name('store');
+    Route::delete('{checkout}', 'destroy')->name('destroy');
     Route::get('{province_id?}/{dest_id?}', 'index')->name('index');
 });
 

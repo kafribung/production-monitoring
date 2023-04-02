@@ -7,12 +7,11 @@ use App\Models\Cart;
 use App\Models\Checkout;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
 class CheckoutController extends Controller
 {
-
     public function __construct()
     {
         // abort_if(Cart::where('status', false)->count() == 0, 404);
@@ -168,7 +167,7 @@ class CheckoutController extends Controller
                 'createdBy:id,name,email',
                 'checkoutCarts.cart.product:id,name,slug',
                 'checkoutCarts.cart.product.oldestImage:id,images.product_id,name',
-                'checkoutCarts.cart.color:id,hexa',
+                'checkoutCarts.cart.color:id,name,hexa',
                 'checkoutCarts.cart.size:id,name'
             ])
                 ->where('created_by', auth()->id())
@@ -182,6 +181,8 @@ class CheckoutController extends Controller
                     'shipping',
                     'total',
                     'status',
+                    'province_id',
+                    'district_id',
                     'created_by'
                 ])
         ]);
@@ -213,8 +214,17 @@ class CheckoutController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy()
+    public function destroy(Checkout $checkout)
     {
-        abort(404);
+        DB::transaction(function () use ($checkout) {
+            $checkout->checkoutCarts->each(function ($checkout_cart) {
+                $checkout_cart->delete();
+            });
+
+            $checkout->delete();
+        });
+
+        Session::flash('message', 'Orderan berhasil dihapus');
+        return to_route('checkout.show');
     }
 }

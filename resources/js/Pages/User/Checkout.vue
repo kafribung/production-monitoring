@@ -117,29 +117,6 @@ NProgress.done()
                                 </div>
                             </div>
 
-                            <div class="sm:col-span-2">
-                                <label for="address"
-                                    class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-gray-700">Alamat</label>
-                                <div class="mt-1">
-                                    <textarea name="address" v-model="form.address" id="address"
-                                        autocomplete="street-address"
-                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                                    <InputError class="mt-2" :message="form.errors.address" />
-                                </div>
-                            </div>
-
-                            <div class="sm:col-span-2">
-                                <label for="phone"
-                                    class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-gray-700">Nomor
-                                    HP</label>
-                                <div class="mt-1">
-                                    <input type="number" name="phone" v-model="form.phone" maxlength="12" id="phone"
-                                        autocomplete="tel"
-                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-                                    <InputError class="mt-2" :message="form.errors.phone" />
-                                </div>
-                            </div>
-
                             <div>
                                 <label for="province"
                                     class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-gray-700">Provinsi</label>
@@ -175,6 +152,30 @@ NProgress.done()
                                         </option>
                                     </select>
                                     <InputError class="mt-2" :message="form.errors.district_id" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-2">
+                                <label for="address"
+                                    class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-gray-700">Alamat
+                                    Pengiriman</label>
+                                <div class="mt-1">
+                                    <textarea name="address" v-model="form.address" id="address"
+                                        autocomplete="street-address"
+                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                                    <InputError class="mt-2" :message="form.errors.address" />
+                                </div>
+                            </div>
+
+                            <div class="sm:col-span-2">
+                                <label for="phone"
+                                    class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-gray-700">Nomor
+                                    HP</label>
+                                <div class="mt-1">
+                                    <input type="number" name="phone" v-model="form.phone" maxlength="12" id="phone"
+                                        autocomplete="tel"
+                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                                    <InputError class="mt-2" :message="form.errors.phone" />
                                 </div>
                             </div>
                         </div>
