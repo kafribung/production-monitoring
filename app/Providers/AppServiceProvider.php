@@ -31,6 +31,9 @@ class AppServiceProvider extends ServiceProvider
                     ->label('Produk')
                     ->icon('heroicon-s-shopping-cart'),
                 NavigationGroup::make()
+                    ->label('Penjualan')
+                    ->icon('heroicon-s-cash'),
+                NavigationGroup::make()
                     ->label('Pengguna')
                     ->icon('heroicon-s-cog')
                     ->collapsed(),

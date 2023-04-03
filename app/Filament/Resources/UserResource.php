@@ -171,4 +171,9 @@ class UserResource extends Resource
             ])
             ->latest('updated_at');
     }
+
+    protected static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 }
