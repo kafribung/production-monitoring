@@ -134,16 +134,16 @@ async function submit(checkout) {
         obj.transaction = response.data.data
 
         // Reload page if not success or pending
-        if (obj.transaction.transaction_status != 'success' || obj.transaction.transaction_status != 'pending')
+        if (obj.transaction.transaction_status && (obj.transaction.transaction_status != 'pending' && obj.transaction.transaction_status != 'success'))
             return location.reload()
 
         // Trigger modal checkout pending
         obj.open_checkout_pending = !obj.open_checkout_pending
 
-        console.log(response);
+        // console.log(response);
 
     } catch (error) {
-        console.log(error)
+        // console.log(error)
     }
 }
 
@@ -246,7 +246,7 @@ NProgress.done()
             </div>
         </Dialog>
     </TransitionRoot>
-
+    <!-- End Modal Item Cart-->
 
     <!-- Product Overviews -->
     <div class="bg-white">
@@ -335,13 +335,16 @@ NProgress.done()
                                             class="rounded bg-white py-1 px-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                                             @click="openModal(checkout.checkout_carts)">Orderan</button>
 
-                                        <button type="button"
-                                            class="rounded bg-white py-1 ml-2 px-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-indigo-300 hover:bg-indigo-50"
-                                            @click="submit(checkout)">Bayar</button>
+                                        <div class="inline" v-if="checkout.status != 'success'">
+                                            <button type="button"
+                                                class="rounded bg-white py-1 ml-2 px-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-indigo-300 hover:bg-indigo-50"
+                                                @click="submit(checkout)">Bayar</button>
 
-                                        <button type="button"
-                                            class="rounded bg-white py-1 ml-2 px-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-red-300 hover:bg-red-50"
-                                            @click="destroy(checkout.id)">Hapus</button>
+                                            <button type="button"
+                                                class="rounded bg-white py-1 ml-2 px-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-red-300 hover:bg-red-50"
+                                                @click="destroy(checkout.id)">Hapus</button>
+                                        </div>
+
                                     </td>
                                 </tr>
                             </tbody>

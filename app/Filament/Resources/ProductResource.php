@@ -116,6 +116,10 @@ class ProductResource extends Resource
                     ->label('Stock')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('stock_last')
+                    ->label('Terjual')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('materil.name')
                     ->label('Material')
                     ->searchable()
