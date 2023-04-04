@@ -21,6 +21,7 @@ class ListCheckouts extends ListRecords
     {
         return [
             CheckoutResource\Widgets\OrderOverview::class,
+            CheckoutResource\Widgets\CheckoutChart::class,
         ];
     }
 }
