@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\User\{CartController, CheckoutController, DetailController, HomeController};
+use App\Http\Controllers\User\{CartController, CategoryController, CheckoutController, DetailController, HomeController};
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -32,6 +32,7 @@ Route::get('dashboard', function () {
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('detail/{product:slug}', DetailController::class)->name('detail.index');
+Route::get('category/{category:name}', CategoryController::class)->name('category.index');
 
 Route::prefix('cart')->name('cart.')->middleware('verified')->controller(CartController::class)->group(function () {
     Route::post('', 'store')->name('store');

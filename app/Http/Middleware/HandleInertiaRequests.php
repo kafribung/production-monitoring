@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
@@ -49,7 +50,8 @@ class HandleInertiaRequests extends Middleware
             'carts' => [
                 'cart' => $request->user() ? $request->user()->carts()->where('status', false)->select(['id', 'product_id', 'color_id', 'size_id', 'price', 'quantity'])->get()->load(['product:id,name,slug', 'product.oldestImage:id,images.product_id,name', 'color:id,hexa', 'size:id,name']) : null,
                 'sub_total' => $request->user() ? $request->user()->carts->where('status', false)->sum('price') : null,
-            ]
+            ],
+            'categories' => Category::get(['name', 'id']),
         ]);
     }
 }

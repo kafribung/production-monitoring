@@ -1,17 +1,15 @@
 <script setup>
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/vue'
 import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
-import { Link } from "@inertiajs/inertia-vue3";
+import { Link, usePage } from "@inertiajs/inertia-vue3";
+import { computed } from 'vue'
 
 // Component
 import Cart from "@/Components/Cart.vue";
 
-const navigation = [
-    { name: 'Kemeja', href: '#' },
-    { name: 'Jeans', href: '#' },
-    { name: 'Kaos', href: '#' },
-    { name: 'Seragam', href: '#' }
-]
+const categories = computed(() => usePage().props.value.categories)
+
+console.log(categories)
 </script>
 
 <template>
@@ -33,8 +31,8 @@ const navigation = [
                                         <span class="sr-only">Your Company</span>
                                         <img alt="Your Company" class="h-8 w-auto sm:h-10"
                                             src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" />
-                                </a>
-                                <div class="-mr-2 flex items-center md:hidden">
+                                    </a>
+                                    <div class="-mr-2 flex items-center md:hidden">
                                         <PopoverButton
                                             class="inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
                                             <span class="sr-only">Open main menu</span>
@@ -44,13 +42,11 @@ const navigation = [
                                 </div>
                             </div>
                             <div class="hidden md:ml-10 md:block md:space-x-8 md:pr-4">
-                                <Link v-for="item in navigation" :key="item.name" :href="item.href"
-                                    class="font-medium text-gray-500 hover:text-gray-900">{{ item.name }}
+                                <Link v-for="category in categories" :key="category.id" as="a"
+                                    :href="route('category.index', category)"
+                                    class="font-medium text-gray-500 hover:text-gray-900 capitalize">
+                                {{ category.name }}
                                 </Link>
-
-                                <!-- <Link v-if="!$page.props.auth.user" :href="route('login')"
-                                                                class="font-medium text-indigo-600 hover:text-indigo-500">
-                                                            Log in</Link> -->
                                 <Cart class="" />
                             </div>
                         </nav>

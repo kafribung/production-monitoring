@@ -16,8 +16,6 @@ class HomeController extends Controller
         )
             ->limit(10)->get(['id', 'name', 'slug', 'price']);
 
-
-        // dd($products->toArray());
         return Inertia::render('User/Home', compact('products'));
     }
 }

@@ -14,10 +14,10 @@ class CategorySeeder extends Seeder
     public function run()
     {
         $details = collect([
-            'Jeans',
-            'Kaos',
-            'Sekolah',
-            'Jas',
+            'jeans',
+            'kaos',
+            'sekolah',
+            'jas',
         ]);
 
         $details->each(function ($detail) {
