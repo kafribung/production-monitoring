@@ -1,10 +1,13 @@
 <script setup>
-import { Link } from "@inertiajs/inertia-vue3";
+import { Link, usePage } from "@inertiajs/inertia-vue3";
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import { Bars3Icon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { computed } from 'vue'
 
 // Component
 import Cart from "@/Components/Cart.vue";
+
+const categories = computed(() => usePage().props.value.categories)
 
 </script>
 
@@ -31,20 +34,16 @@ import Cart from "@/Components/Cart.vue";
                         </Link>
                     </div>
                     <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                        <!-- Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
-                        <a href="#"
-                            class="inline-flex items-center border-b-2 border-indigo-500 px-1 pt-1 text-sm font-medium text-gray-900">Dashboard</a>
-                        <a href="#"
-                            class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">Team</a>
-                        <a href="#"
-                            class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">Projects</a>
-                        <a href="#"
-                            class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">Calendar</a>
+                        <Link v-for="category in categories" :key="category.id" :href="route('category.index', category)"
+                            :class="{ 'border-b-2 border-indigo-500': $page.url === '/category/' + category.name }"
+                            class="inline-flex items-center  px-1 pt-1 text-sm font-medium text-gray-900 capitalize">
+                        {{ category.name }}
+                        </Link>
+
                     </div>
                 </div>
-
+                <!-- Cart -->
                 <Cart />
-
             </div>
         </div>
 
