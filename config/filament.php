@@ -143,7 +143,7 @@ return [
             Widgets\FilamentInfoWidget::class,
             // Library
             \Awcodes\Overlook\Overlook::class,
-            \App\Filament\Resources\CheckoutResource\Widgets\OrderOverview::class,
+            \App\Filament\Resources\CheckoutResource\Widgets\CheckoutChart::class,
             // \CheckoutResource\Widgets\CheckoutChart::class,
         ],
     ],
