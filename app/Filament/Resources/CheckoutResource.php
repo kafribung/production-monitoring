@@ -4,10 +4,10 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CheckoutResource\Pages;
 use App\Models\Checkout;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
-use Filament\Tables;
+use App\Models\Product;
+use Filament\Resources\{Form, Resource, Table};
+use Filament\{Forms, Tables};
+use Filament\Forms\Components\Actions\Action;
 
 class CheckoutResource extends Resource
 {
@@ -67,6 +67,48 @@ class CheckoutResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make()
+                    ->mutateRecordDataUsing(function (array $data, Checkout $record): array {
+                        // dd($record);
+                        $data['user_id'] = auth()->id();
+                        $data['checkout_carts'] = [];
+
+                        foreach ($record->checkoutCarts as $checkout_cart) {
+                            array_push($data['checkout_carts'], [
+                                'product_name' =>  $checkout_cart->cartProduct->name,
+                                'color' =>  $checkout_cart->cart->color->hexa,
+                                'size' =>  $checkout_cart->cart->size->name,
+                                'price' =>  $checkout_cart->cart->price,
+                                'quantity' =>  $checkout_cart->cart->quantity,
+                            ]);
+                        };
+
+                        return $data;
+                    })->form([
+                        Forms\Components\Repeater::make('checkout_carts')
+                            ->schema([
+                                Forms\Components\TextInput::make('product_name')
+                                    ->suffixAction(
+                                        function (?string $state): Action {
+                                            $product = Product::where('name', $state)->first(['id']);
+                                            return Action::make('visit')
+                                                ->icon('heroicon-s-external-link')
+                                                ->url(
+                                                    filled($state) ? config('app.url') . "/admin/products/{$product->id}/edit?activeRelationManager=0" : null,
+                                                    shouldOpenInNewTab: true,
+                                                );
+                                        }
+                                    ),
+                                Forms\Components\TextInput::make('color'),
+                                Forms\Components\TextInput::make('size'),
+                                Forms\Components\TextInput::make('price'),
+                                Forms\Components\TextInput::make('quantity'),
+                            ])
+                            ->disableItemCreation()
+                            ->disableItemDeletion()
+                            ->disableItemMovement(),
+
+                    ])
                 // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -88,6 +130,7 @@ class CheckoutResource extends Resource
             'index' => Pages\ListCheckouts::route('/'),
             // 'create' => Pages\CreateCheckout::route('/create'),
             // 'edit' => Pages\EditCheckout::route('/{record}/edit'),
+            // 'view' => Pages\ViewCartCheckout::route('/{record}'),
         ];
     }
 }

@@ -218,7 +218,6 @@ NProgress.done()
                                                             checkout_cart.cart.size.name }}</p>
                                                     </div>
 
-
                                                 </div>
 
                                                 <div class="flex flex-1 items-end justify-between pt-2">
