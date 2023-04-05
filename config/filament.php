@@ -139,8 +139,10 @@ return [
         'namespace' => 'App\\Filament\\Widgets',
         'path' => app_path('Filament/Widgets'),
         'register' => [
-            Widgets\AccountWidget::class,
-            Widgets\FilamentInfoWidget::class,
+            // Widgets\AccountWidget::class,
+            // Widgets\FilamentInfoWidget::class,
+            \App\Filament\Resources\CheckoutResource\Widgets\StatsOverview::class,
+
             // Library
             \Awcodes\Overlook\Overlook::class,
             \App\Filament\Resources\CheckoutResource\Widgets\CheckoutChart::class,
