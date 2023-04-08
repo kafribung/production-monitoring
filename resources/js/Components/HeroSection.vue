@@ -8,8 +8,6 @@ import { computed } from 'vue'
 import Cart from "@/Components/Cart.vue";
 
 const categories = computed(() => usePage().props.value.categories)
-
-console.log(categories)
 </script>
 
 <template>

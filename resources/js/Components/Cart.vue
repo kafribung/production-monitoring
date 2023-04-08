@@ -112,8 +112,8 @@ const url_img = location.origin + '/storage/'
                     class="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                     <span class="sr-only">Open user menu</span>
                     <img class="h-8 w-8 rounded-full"
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                        alt="" />
+                        :src="`https://ui-avatars.com/api/?name=${$page.props.auth.user.name}&background=0CB26B&bold=true`"
+                        :alt="$page.props.auth.user.name" />
                 </MenuButton>
                 <div v-else class="flex items-center -mt-2">
                     <Link :href="route('login')" class="text-base font-medium text-gray-500 hover:text-gray-900">Login
@@ -130,14 +130,16 @@ const url_img = location.origin + '/storage/'
                 <MenuItems
                     class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <MenuItem v-slot="{ active }">
-                    <a href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Your
-                        Profile</a>
+                    <Link href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">{{
+                        $page.props.auth.user.name }}</Link>
+                    </MenuItem>
+                    <MenuItem v-if="$page.props.auth.user.role === 'super_admin' || $page.props.auth.user.role === 'admin'"
+                        v-slot="{ active }">
+                    <a :href="route('filament.pages.dashboard')"
+                        :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Dashboard</a>
                     </MenuItem>
                     <MenuItem v-slot="{ active }">
-                    <a href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Settings</a>
-                    </MenuItem>
-                    <MenuItem v-slot="{ active }">
-                    <Link :href="route('logout')" method="post" as="a"
+                    <Link :href="route('logout')" method="post" as="button"
                         :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Sign
                     out</Link>
                     </MenuItem>
