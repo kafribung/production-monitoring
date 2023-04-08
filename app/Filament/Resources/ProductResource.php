@@ -11,10 +11,8 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
-use Illuminate\Database\Eloquent\{
-    Builder,
-};
 use Illuminate\Support\Str;
+use Filament\Resources\Pages\{CreateRecord, Page};
 
 class ProductResource extends Resource
 {
@@ -42,7 +40,8 @@ class ProductResource extends Resource
                                     })
                                     ->unique(ignoreRecord: true),
                                 Forms\Components\TextInput::make('slug')
-                                    ->disabled(),
+                                    ->disabled()
+                                    ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord),
                                 Forms\Components\TextInput::make('price')
                                     ->required()
                                     ->disableAutocomplete()
