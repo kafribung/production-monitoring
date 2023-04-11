@@ -47,7 +47,7 @@ class ProductResource extends Resource
                                     ->disableAutocomplete()
                                     ->mask(fn (Forms\Components\TextInput\Mask $mask) => $mask->money(prefix: 'Rp.', thousandsSeparator: ',', decimalPlaces: 2, isSigned: false))
                                     ->columnSpanFull(),
-                                Forms\Components\MarkdownEditor::make('description')
+                                Forms\Components\RichEditor::make('description')
                                     ->required()
                                     ->disableToolbarButtons([
                                         'attachFiles',
@@ -55,7 +55,11 @@ class ProductResource extends Resource
                                         'link',
                                         'strike',
                                     ])
-                                    ->columnSpanFull()
+                                    ->columnSpanFull(),
+                                Forms\Components\Radio::make('custom')
+                                    ->required()
+                                    ->reactive()
+                                    ->boolean(),
                             ])
                             ->columns(2)
                             ->columnSpan(2),
@@ -92,6 +96,12 @@ class ProductResource extends Resource
                                     ->bulkToggleable()
                                     ->columns(3)
                                     ->relationship('sizes', 'name'),
+                                Forms\Components\CheckboxList::make('customs')
+                                    ->required()
+                                    ->bulkToggleable()
+                                    ->columns(3)
+                                    ->relationship('customs', 'name')
+                                    ->visible(fn ($get) => $get('custom') ?? false)
                             ])
                             ->columns(2)
                             ->columnSpanFull(),
@@ -124,6 +134,8 @@ class ProductResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('category.name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('customs.name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('colors.name')
                     ->searchable(),

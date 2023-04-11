@@ -5,6 +5,7 @@ namespace App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Database\Eloquent\Model;
 
 class EditProduct extends EditRecord
 {
@@ -29,5 +30,16 @@ class EditProduct extends EditRecord
         $data['user_id'] = auth()->id();
 
         return $data;
+    }
+
+    protected function handleRecordUpdate(Model $record, array $data): Model
+    {
+        if ($data['custom'] == "0") {
+            $record->customs()->detach();
+        }
+
+        $record->update($data);
+
+        return $record;
     }
 }

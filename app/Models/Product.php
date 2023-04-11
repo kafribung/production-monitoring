@@ -38,16 +38,6 @@ class Product extends Model
         return $this->belongsTo(Category::class, 'category_id');
     }
 
-    public function colors()
-    {
-        return $this->belongsToMany(Color::class);
-    }
-
-    public function sizes()
-    {
-        return $this->belongsToMany(Size::class);
-    }
-
     public function images()
     {
         return $this->hasMany(Image::class, 'product_id');
@@ -61,5 +51,20 @@ class Product extends Model
     public function carts()
     {
         return  $this->hasMany(Cart::class);
+    }
+
+    public function colors()
+    {
+        return $this->belongsToMany(Color::class);
+    }
+
+    public function sizes()
+    {
+        return $this->belongsToMany(Size::class);
+    }
+
+    public function customs()
+    {
+        return $this->belongsToMany(Custom::class);
     }
 }
