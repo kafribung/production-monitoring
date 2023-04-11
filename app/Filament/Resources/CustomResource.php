@@ -5,9 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CustomResource\Pages;
 use App\Models\Custom;
 use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Resources\{Form, Resource, Table};
 use Filament\Tables;
 
 class CustomResource extends Resource
