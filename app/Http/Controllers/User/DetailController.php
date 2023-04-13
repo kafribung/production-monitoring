@@ -20,6 +20,7 @@ class DetailController extends Controller
             'colors:id,name,hexa',
             'materil:id,name',
             'sizes:id,name',
+            'customs:id,name',
         ])
             ->only([
                 'id',
@@ -30,6 +31,7 @@ class DetailController extends Controller
                 'colors',
                 'materil',
                 'sizes',
+                'customs',
                 'stock_first'
             ]);
 

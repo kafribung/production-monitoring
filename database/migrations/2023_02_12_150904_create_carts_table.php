@@ -14,12 +14,27 @@ return new class () extends Migration {
     {
         Schema::create('carts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
-            $table->foreignId('color_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
-            $table->foreignId('size_id')->constrained()->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreignId('product_id')
+                ->constrained()
+                ->restrictOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('color_id')
+                ->constrained()
+                ->restrictOnDelete()
+                ->cascadeOnUpdate();
+            $table->foreignId('size_id')
+                ->constrained()
+                ->restrictOnDelete()
+                ->cascadeOnUpdate();
             $table->smallInteger('quantity');
             $table->integer('price');
             $table->boolean('status')->default(false);
+            $table->foreignId('custom_id')
+                ->nullable()
+                ->constrained('customs')
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
+            $table->text('note')->nullable();
 
             $table->foreignId('created_by')
                 ->constrained('users')

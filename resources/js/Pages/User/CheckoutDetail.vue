@@ -229,6 +229,18 @@ NProgress.done()
                                                         {{ checkout_cart.cart.quantity }}
                                                     </p>
                                                 </div>
+
+                                                <div v-if="checkout_cart.cart.custom" class="pt-2">
+                                                    <p class="text-sm font-bold text-gray-900">
+                                                        Custom:
+                                                    </p>
+                                                    <p class="text-sm font-medium text-gray-900">
+                                                        {{ checkout_cart.cart.custom.name }}
+                                                    </p>
+                                                    <p class="text-sm font-medium text-gray-900">
+                                                        {{ checkout_cart.cart.note }}
+                                                    </p>
+                                                </div>
                                             </div>
                                         </li>
                                     </ul>

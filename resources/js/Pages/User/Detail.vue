@@ -11,6 +11,8 @@ import Banner from "@/Components/Banner.vue";
 import Footer from "@/Components/Footer.vue";
 import InputError from '@/Components/InputError.vue';
 
+import { ref } from 'vue'
+
 // Icon
 import {
     Disclosure,
@@ -42,6 +44,8 @@ const form = useForm({
     quantity: 1,
     size_id: props.product.sizes[0].id,
     product_id: props.product.id,
+    custom_id: null,
+    note: null
 })
 
 // Submit handler
@@ -49,10 +53,13 @@ function submit() {
     form.post(route('cart.store'),
         {
             preserveScroll: true,
-            onSuccess: () => form.reset('color_id', 'qunatity'),
+            onSuccess: () => form.reset('color_id', 'qunatity', 'custom_id', 'note'),
         }
     )
 }
+
+
+const open = ref(false)
 
 // NProgress
 NProgress.start();
@@ -169,11 +176,11 @@ NProgress.done()
                             </RadioGroup>
                         </div>
 
-                        <div class="flex justify-start">
-                            <div class="mt-4">
+                        <div class="flex flex-col justify-start">
+                            <div class="mt-4 ml-2">
                                 <label for="quantity" class="text-sm block mb-1 text-gray-600 ">Quantity</label>
                                 <select id="quantity" v-model="form.quantity"
-                                    class="rounded-md border border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
+                                    class="rounded-md border min-w-full border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus min-w-full:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
                                     <option v-for="n in 10" :value="n">{{ n }}</option>
                                 </select>
                             </div>
@@ -181,11 +188,27 @@ NProgress.done()
                             <div class="mt-4 ml-2">
                                 <label for="size" class="text-sm block mb-1 text-gray-600">Size</label>
                                 <select id="size" v-model="form.size_id"
-                                    class="rounded-md border border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
+                                    class="rounded-md border min-w-full border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
                                     <option v-for="size in product.sizes" :key="size.id" :value="size.id">{{
                                         size.name
                                     }}</option>
                                 </select>
+                            </div>
+
+                            <div class="mt-4 ml-2">
+                                <label for="custom" class="text-sm block mb-1 text-gray-600">Custom</label>
+                                <select id="custom" v-model="form.custom_id"
+                                    class="rounded-md border min-w-full border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
+                                    <option v-for="custom in product.customs" :key="custom.id" :value="custom.id">{{
+                                        custom.name
+                                    }}</option>
+                                </select>
+                            </div>
+
+                            <div class="mt-4 ml-2">
+                                <label for="note" class="text-sm block mb-1 text-gray-600">Note</label>
+                                <textarea id="note" v-model="form.note"
+                                    class="rounded-md border min-w-full border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"></textarea>
                             </div>
                         </div>
 
@@ -202,7 +225,6 @@ NProgress.done()
 
                     <section aria-labelledby="details-heading" class="mt-12">
                         <h2 id="details-heading" class="sr-only">Additional details</h2>
-
                         <div class="divide-y divide-gray-200 border-t">
                             <Disclosure as="div" v-slot="{ open }">
                                 <h3>
@@ -227,10 +249,6 @@ NProgress.done()
                                 </DisclosurePanel>
                             </Disclosure>
                         </div>
-                    </section>
-                    <section aria-labelledby="details-heading" class="mt-12">
-                        <h2 id="details-heading" class="sr-only">Additional details</h2>
-
                         <div class="divide-y divide-gray-200 border-t">
                             <Disclosure as="div" v-slot="{ open }">
                                 <h3>

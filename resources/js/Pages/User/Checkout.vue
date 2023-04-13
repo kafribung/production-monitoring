@@ -172,7 +172,7 @@ NProgress.done()
                                     class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-gray-700">Nomor
                                     HP</label>
                                 <div class="mt-1">
-                                    <input type="number" name="phone" v-model="form.phone" maxlength="12" id="phone"
+                                    <input type="tel" v-model="form.phone" maxlength="13" pattern="[+0-9]{12}" id="phone"
                                         autocomplete="tel"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                                     <InputError class="mt-2" :message="form.errors.phone" />
@@ -268,6 +268,17 @@ NProgress.done()
 
                                         <p class="ml-4 text-sm font-semibold text-gray-900">
                                             {{ cart.quantity }}
+                                        </p>
+                                    </div>
+                                    <div v-if="cart.custom" class="pt-2">
+                                        <p class="text-sm font-bold text-gray-900">
+                                            Custom:
+                                        </p>
+                                        <p class="text-sm font-medium text-gray-900">
+                                            {{ cart.custom.name }}
+                                        </p>
+                                        <p class="text-sm font-medium text-gray-900">
+                                            {{ cart.note }}
                                         </p>
                                     </div>
                                 </div>

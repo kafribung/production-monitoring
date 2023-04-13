@@ -62,6 +62,18 @@ const url_img = location.origin + '/storage/'
                                         <p class="mt-4 text-sm font-medium text-gray-500">{{ cart.quantity }}</p>
                                     </div>
 
+                                    <div v-if="cart.custom" class="pt-2">
+                                        <p class="text-sm font-bold text-gray-900">
+                                            Custom:
+                                        </p>
+                                        <p class="text-sm font-medium text-gray-900">
+                                            {{ cart.custom.name }}
+                                        </p>
+                                        <p class="text-sm font-medium text-gray-900">
+                                            {{ cart.note }}
+                                        </p>
+                                    </div>
+
                                     <div class="mt-4 flex items-end justify-end">
                                         <div class="ml-4">
                                             <Link :href="route('cart.destroy', cart.id)" method="delete"
@@ -139,7 +151,7 @@ const url_img = location.origin + '/storage/'
                         :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Dashboard</a>
                     </MenuItem>
                     <MenuItem v-slot="{ active }">
-                    <Link :href="route('logout')" method="post" as="button"
+                    <Link :href="route('logout')" method="post"
                         :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Sign
                     out</Link>
                     </MenuItem>

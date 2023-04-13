@@ -20,10 +20,12 @@ class CartController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'color_id' => 'bail|required|numeric',
-            'quantity' => 'bail|required|numeric',
-            'size_id' => 'bail|required|numeric',
+            'color_id'   => 'bail|required|numeric',
+            'quantity'   => 'bail|required|numeric',
+            'size_id'    => 'bail|required|numeric',
             'product_id' => 'bail|required|numeric',
+            'custom_id'  => 'nullable',
+            'note'       => 'nullable',
         ]);
 
         $product = Product::find($data['product_id'], ['id', 'slug', 'price']);
@@ -32,17 +34,16 @@ class CartController extends Controller
         $data['price'] = $product->price * $data['quantity'];
 
         // Check cart
-        $cart = Cart::where(function ($q) use ($data) {
-            $q->where('color_id', $data['color_id'])
-                ->where('quantity', $data['quantity'])
-                ->where('size_id', $data['size_id'])
-                ->where('product_id', $data['product_id']);
-        })->first(['id']);
+        // $cart = Cart::where(function ($q) use ($data) {
+        //     $q->where('color_id', $data['color_id'])
+        //         ->where('quantity', $data['quantity'])
+        //         ->where('size_id', $data['size_id'])
+        //         ->where('product_id', $data['product_id']);
+        // })->first(['id']);
         // End check cart
 
-        DB::transaction(function () use ($data, $cart) {
-            Cart::updateOrCreate(
-                ['id' => $cart->id ?? null],
+        DB::transaction(function () use ($data) {
+            Cart::create(
                 $data
             );
         });

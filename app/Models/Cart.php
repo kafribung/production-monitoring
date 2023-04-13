@@ -39,4 +39,9 @@ class Cart extends Model
     {
         return $this->belongsTo(Size::class);
     }
+
+    public function custom()
+    {
+        return $this->belongsTo(Custom::class);
+    }
 }

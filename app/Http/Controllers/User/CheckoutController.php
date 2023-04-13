@@ -168,7 +168,8 @@ class CheckoutController extends Controller
                 'checkoutCarts.cart.product:id,name,slug',
                 'checkoutCarts.cart.product.oldestImage:id,images.product_id,name',
                 'checkoutCarts.cart.color:id,name,hexa',
-                'checkoutCarts.cart.size:id,name'
+                'checkoutCarts.cart.size:id,name',
+                'checkoutCarts.cart.custom:id,name',
             ])
                 ->where('created_by', auth()->id())
                 ->latest()
@@ -186,16 +187,6 @@ class CheckoutController extends Controller
                     'created_by'
                 ])
         ]);
-    }
-
-    /**
-     * Show the form for editing the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function edit()
-    {
-        //
     }
 
     /**

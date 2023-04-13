@@ -18,6 +18,7 @@ return new class () extends Migration {
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
             $table->foreignId('product_id')
+                ->constrained('products')
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
             $table->unique(['custom_id', 'product_id']);

@@ -48,7 +48,7 @@ class HandleInertiaRequests extends Middleware
                 'message' => fn () => $request->session()->get('message')
             ],
             'carts' => [
-                'cart' => $request->user() ? $request->user()->carts()->where('status', false)->select(['id', 'product_id', 'color_id', 'size_id', 'price', 'quantity'])->get()->load(['product:id,name,slug', 'product.oldestImage:id,images.product_id,name', 'color:id,hexa', 'size:id,name']) : null,
+                'cart' => $request->user() ? $request->user()->carts()->where('status', false)->get(['id', 'product_id', 'color_id', 'size_id', 'price', 'quantity', 'custom_id', 'note'])->load(['product:id,name,slug', 'product.oldestImage:id,images.product_id,name', 'color:id,hexa', 'size:id,name', 'custom:id,name']) : null,
                 'sub_total' => $request->user() ? $request->user()->carts->where('status', false)->sum('price') : null,
             ],
             'categories' => Category::get(['name', 'id']),

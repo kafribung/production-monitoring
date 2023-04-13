@@ -80,6 +80,8 @@ class CheckoutResource extends Resource
                                 'size' =>  $checkout_cart->cart->size->name,
                                 'price' =>  $checkout_cart->cart->price,
                                 'quantity' =>  $checkout_cart->cart->quantity,
+                                'custom_name' => $checkout_cart->cart->custom ? $checkout_cart->cart->custom->name : null,
+                                'note' => $checkout_cart->cart->note
                             ]);
                         };
 
@@ -103,6 +105,8 @@ class CheckoutResource extends Resource
                                 Forms\Components\TextInput::make('size'),
                                 Forms\Components\TextInput::make('price'),
                                 Forms\Components\TextInput::make('quantity'),
+                                Forms\Components\TextInput::make('custom_name'),
+                                Forms\Components\Textarea::make('note'),
                             ])
                             ->disableItemCreation()
                             ->disableItemDeletion()
