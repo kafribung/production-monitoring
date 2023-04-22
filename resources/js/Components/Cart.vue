@@ -151,6 +151,12 @@ const url_img = location.origin + '/storage/'
                         :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Dashboard</a>
                     </MenuItem>
                     <MenuItem v-slot="{ active }">
+                    <Link :href="route('checkout.show')"
+                        :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">
+                    Detail Pesanan
+                    </Link>
+                    </MenuItem>
+                    <MenuItem v-slot="{ active }">
                     <Link :href="route('logout')" method="post"
                         :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Sign
                     out</Link>

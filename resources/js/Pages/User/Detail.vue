@@ -10,6 +10,7 @@ import Currency from "@/Components/Currency.vue";
 import Banner from "@/Components/Banner.vue";
 import Footer from "@/Components/Footer.vue";
 import InputError from '@/Components/InputError.vue';
+import Review from '@/Components/Review.vue';
 
 import { ref } from 'vue'
 
@@ -276,6 +277,8 @@ NProgress.done()
                     </section>
                 </div>
             </div>
+            <!-- Review -->
+            <Review />
         </div>
     </div>
 
