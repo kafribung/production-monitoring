@@ -11,10 +11,20 @@ class Review extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = [
-        'checkout_chart_id',
-        'message',
-        'created_by',
-        'updated_by',
+    protected $guarded = [
+        'id',
+        'created_at',
+        'updated_at',
+        'deleted_at',
     ];
+
+    public function checkout_cart()
+    {
+        return $this->belongsTo(CheckoutCart::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }

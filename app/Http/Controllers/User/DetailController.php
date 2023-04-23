@@ -21,6 +21,12 @@ class DetailController extends Controller
             'materil:id,name',
             'sizes:id,name',
             'customs:id,name',
+            'carts' => [
+                'checkout_carts:id,cart_id' => [
+                    'review:id,checkout_cart_id,value,star,created_at,created_by',
+                    'review.user:id,name',
+                ]
+            ]
         ])
             ->only([
                 'id',
@@ -32,7 +38,8 @@ class DetailController extends Controller
                 'materil',
                 'sizes',
                 'customs',
-                'stock_first'
+                'stock_first',
+                'carts',
             ]);
 
         // dd($product['sizes'][0]['id']);

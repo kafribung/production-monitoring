@@ -22,7 +22,7 @@ class Cart extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'created_at');
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function product()
@@ -43,5 +43,10 @@ class Cart extends Model
     public function custom()
     {
         return $this->belongsTo(Custom::class);
+    }
+
+    public function checkout_carts()
+    {
+        return $this->hasMany(CheckoutCart::class);
     }
 }

@@ -10,7 +10,7 @@ import Currency from "@/Components/Currency.vue";
 import Banner from "@/Components/Banner.vue";
 import Footer from "@/Components/Footer.vue";
 import InputError from '@/Components/InputError.vue';
-import Review from '@/Components/Review.vue';
+import ListReview from '@/Components/ListReview.vue';
 
 import { ref } from 'vue'
 
@@ -278,7 +278,7 @@ NProgress.done()
                 </div>
             </div>
             <!-- Review -->
-            <Review />
+            <ListReview v-if="props.product.carts[0].checkout_carts[0].review" :reviews="props.product.carts" />
         </div>
     </div>
 

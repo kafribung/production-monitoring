@@ -41,4 +41,9 @@ class CheckoutCart extends Model
             'id',
         );
     }
+
+    public function review()
+    {
+        return $this->hasOne(Review::class);
+    }
 }

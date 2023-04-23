@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\User\{CartController, CategoryController, CheckoutController, DetailController, HomeController};
+use App\Http\Controllers\User\{CartController, CategoryController, CheckoutController, DetailController, HomeController, ReviewController};
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -34,16 +34,29 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('detail/{product:slug}', DetailController::class)->name('detail.index');
 Route::get('category/{category:name}', CategoryController::class)->name('category.index');
 
-Route::prefix('cart')->name('cart.')->middleware('verified')->controller(CartController::class)->group(function () {
-    Route::post('', 'store')->name('store');
-    Route::delete('/{cart}', 'destroy')->name('destroy');
+Route::middleware('verified')->group(function () {
+    // Cart
+    Route::prefix('cart')->name('cart.')->controller(CartController::class)->group(function () {
+        Route::post('', 'store')->name('store');
+        Route::delete('/{cart}', 'destroy')->name('destroy');
+    });
+
+    // Checkout
+    Route::prefix('checkout')->name('checkout.')->controller(CheckoutController::class)->group(function () {
+        Route::get('show', 'show')->name('show');
+        Route::post('', 'store')->name('store');
+        Route::delete('{checkout}', 'destroy')->name('destroy');
+        Route::get('{province_id?}/{dest_id?}', 'index')->name('index');
+    });
+
+    // Review
+    Route::prefix('review')->name('review.')->controller(ReviewController::class)->group(function () {
+        Route::get('show/{checkout_cart}', 'show')->name('show');
+        Route::patch('update/{checkout_cart}', 'update')->name('update');
+    });
 });
 
-Route::prefix('checkout')->name('checkout.')->middleware('verified')->controller(CheckoutController::class)->group(function () {
-    Route::get('show', 'show')->name('show');
-    Route::post('', 'store')->name('store');
-    Route::delete('{checkout}', 'destroy')->name('destroy');
-    Route::get('{province_id?}/{dest_id?}', 'index')->name('index');
-});
+
+
 
 require __DIR__ . '/auth.php';

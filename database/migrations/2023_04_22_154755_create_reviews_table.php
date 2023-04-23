@@ -18,7 +18,9 @@ return new class () extends Migration {
                 ->constrained('checkout_carts')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
-            $table->text('message');
+            $table->text('value');
+            $table->tinyInteger('star');
+
             $table->foreignId('created_by')
                 ->constrained('users')
                 ->cascadeOnUpdate()

@@ -241,6 +241,13 @@ NProgress.done()
                                                         {{ checkout_cart.cart.note }}
                                                     </p>
                                                 </div>
+
+                                                <div class="pt-2">
+                                                    <Link :href="route('review.show', checkout_cart.id)" as="button"
+                                                        class="rounded-md bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                                                    Review
+                                                    </Link>
+                                                </div>
                                             </div>
                                         </li>
                                     </ul>
