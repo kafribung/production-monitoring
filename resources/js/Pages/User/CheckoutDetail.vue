@@ -26,12 +26,14 @@ const obj = reactive({
     checkout_carts: null,
     open: false,
     transaction: {},
-    open_checkout_pending: false
+    open_checkout_pending: false,
+    status: null
 })
 // Function
-function openModal(checkout_carts) {
+function openModal(checkout_carts, status) {
     obj.checkout_carts = checkout_carts
     obj.open = !obj.open
+    obj.status = status
 }
 
 // Submit handler
@@ -242,7 +244,7 @@ NProgress.done()
                                                     </p>
                                                 </div>
 
-                                                <div class="pt-2">
+                                                <div v-if="obj.status == 'success'" class="pt-2">
                                                     <Link :href="route('review.show', checkout_cart.id)" as="button"
                                                         class="rounded-md bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
                                                     Review
@@ -351,7 +353,7 @@ NProgress.done()
                                         class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                                         <button type="button"
                                             class="rounded bg-white py-1 px-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                                            @click="openModal(checkout.checkout_carts)">Orderan</button>
+                                            @click="openModal(checkout.checkout_carts, checkout.status)">Orderan</button>
 
                                         <div class="inline" v-if="checkout.status != 'success'">
                                             <button type="button"
