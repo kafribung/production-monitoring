@@ -48,9 +48,14 @@ class Product extends Model
         return $this->hasOne(Image::class, 'product_id')->oldestOfMany();
     }
 
-    public function carts()
+    // public function carts()
+    // {
+    //     return  $this->hasMany(Cart::class);
+    // }
+
+    public function cart()
     {
-        return  $this->hasMany(Cart::class);
+        return $this->hasOne(Cart::class);
     }
 
     public function colors()

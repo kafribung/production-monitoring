@@ -21,12 +21,13 @@ class DetailController extends Controller
             'materil:id,name',
             'sizes:id,name',
             'customs:id,name',
-            'carts' => [
+            'cart' => [
                 'checkout_carts:id,cart_id' => [
                     'review:id,checkout_cart_id,value,star,created_at,created_by',
                     'review.user:id,name',
                 ]
             ]
+            // 'cart.checkout_cart.review:id,checkout_cart_id,value,star,created_at,created_by'
         ])
             ->only([
                 'id',
@@ -39,9 +40,8 @@ class DetailController extends Controller
                 'sizes',
                 'customs',
                 'stock_first',
-                'carts',
+                'cart',
             ]);
-
         // dd($product['sizes'][0]['id']);
 
         return inertia('User/Detail', [

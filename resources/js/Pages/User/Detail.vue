@@ -278,9 +278,7 @@ NProgress.done()
                 </div>
             </div>
             <!-- Review -->
-            <ListReview
-                v-if="props.product.carts[0].checkout_carts.length != 0 && props.product.carts[0].checkout_carts[0].review"
-                :reviews="props.product.carts" />
+            <ListReview v-if="props.product.cart.checkout_carts.length != 0" :reviews="props.product.cart" />
         </div>
     </div>
 
