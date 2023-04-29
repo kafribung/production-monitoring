@@ -15,13 +15,13 @@ const props = defineProps({
             <div class="-my-10">
                 <div v-for="(cart, index) in props.carts" :key="cart.id" class="inline">
                     <div class="flex space-x-4 text-sm text-gray-500" v-for="checkout_cart in cart.checkout_carts">
-                        <div class="flex-none py-10" v-if="checkout_cart.id">
+                        <div class="flex-none py-10" v-if="checkout_cart.review">
                             <img class="h-10 w-10 rounded-full inline"
                                 :src="`https://ui-avatars.com/api/?name=${checkout_cart.review.user.name}&background=random&bold=true`"
                                 :alt="checkout_cart.review.user.name" />
                         </div>
                         <div :class="[index === 0 ? '' : 'border-t border-gray-200', 'flex-1 py-10']"
-                            v-if="checkout_cart.id">
+                            v-if="checkout_cart.review">
                             <h3 class="font-medium text-gray-900">{{ checkout_cart.review.user.name }}</h3>
                             <p>
                                 <time>{{ checkout_cart.review.created_at
