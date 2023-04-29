@@ -21,7 +21,7 @@ class DetailController extends Controller
             'materil:id,name',
             'sizes:id,name',
             'customs:id,name',
-            'cart' => [
+            'carts' => [
                 'checkout_carts:id,cart_id' => [
                     'review:id,checkout_cart_id,value,star,created_at,created_by',
                     'review.user:id,name',
@@ -40,10 +40,11 @@ class DetailController extends Controller
                 'sizes',
                 'customs',
                 'stock_first',
-                'cart',
+                'carts',
             ]);
         // dd($product['sizes'][0]['id']);
 
+        // dd($product);
         return inertia('User/Detail', [
             'product' => $product,
         ]);
