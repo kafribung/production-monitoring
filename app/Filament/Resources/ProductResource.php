@@ -41,7 +41,9 @@ class ProductResource extends Resource
                                     ->unique(ignoreRecord: true),
                                 Forms\Components\TextInput::make('slug')
                                     ->disabled()
-                                    ->required(),
+                                    ->unique(ignoreRecord: true)
+                                    ->required()
+                                    ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord),
                                 Forms\Components\TextInput::make('price')
                                     ->required()
                                     ->disableAutocomplete()
