@@ -45,7 +45,7 @@ class ImagesRelationManager extends RelationManager
                     ->maxSize(1024)
                     ->required()
                     ->getUploadedFileNameForStorageUsing(function ($file): string {
-                        return (string)  str($file->getClientOriginalName())->prepend(Carbon::now()->format('Y-m-d') . '/product_images-');
+                        return (string)  str($file->getClientOriginalName())->prepend(Carbon::now()->format('Y-m-d') . '/product_images-' . rand() . '-');
                     })
                     ->columnSpanFull(),
             ]);
