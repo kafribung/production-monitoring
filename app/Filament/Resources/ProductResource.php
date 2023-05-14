@@ -12,7 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Support\Str;
-use Filament\Resources\Pages\{CreateRecord, Page};
+use Illuminate\Validation\Rules\Unique;
 
 class ProductResource extends Resource
 {
@@ -38,12 +38,10 @@ class ProductResource extends Resource
                                     ->afterStateUpdated(function (Closure $set, $state) {
                                         $set('slug', Str::slug($state, '-'));
                                     })
-                                    ->unique(ignoreRecord: true),
-                                Forms\Components\TextInput::make('slug')
-                                    ->disabled()
-                                    ->unique(ignoreRecord: true)
-                                    ->required()
-                                    ->dehydrated(fn (Page $livewire) => $livewire instanceof CreateRecord),
+                                    ->unique(table: Product::class, ignoreRecord: true, callback: function (Unique $rule) {
+                                        return $rule->whereNull('deleted_at');
+                                    })
+                                    ->columnSpanFull(),
                                 Forms\Components\TextInput::make('price')
                                     ->required()
                                     ->disableAutocomplete()

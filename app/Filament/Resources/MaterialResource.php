@@ -14,6 +14,7 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\{
     Builder,
 };
+use Illuminate\Validation\Rules\Unique;
 
 class MaterialResource extends Resource
 {
@@ -35,7 +36,9 @@ class MaterialResource extends Resource
                                     ->autofocus()
                                     ->disableAutocomplete()
                                     ->required()
-                                    ->unique(ignoreRecord: true),
+                                    ->unique(table: Material::class, ignoreRecord: true, callback: function (Unique $rule) {
+                                        return $rule->whereNull('deleted_at');
+                                    })
                             ])
                             ->columnSpan(2),
                         Forms\Components\Card::make()

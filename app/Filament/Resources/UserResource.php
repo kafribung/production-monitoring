@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\{
     SoftDeletingScope,
 };
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Unique;
 
 class UserResource extends Resource
 {
@@ -42,7 +43,9 @@ class UserResource extends Resource
                                     ->email()
                                     ->disableAutocomplete()
                                     ->helperText('Email must be unique')
-                                    ->unique(ignoreRecord: true),
+                                    ->unique(table: User::class, ignoreRecord: true, callback: function (Unique $rule) {
+                                        return $rule->whereNull('deleted_at');
+                                    }),
                                 Forms\Components\TextInput::make('password')
                                     ->required(fn (string $context): bool => $context === 'create')
                                     ->password()

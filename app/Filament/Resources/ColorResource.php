@@ -9,6 +9,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Illuminate\Validation\Rules\Unique;
 
 class ColorResource extends Resource
 {
@@ -30,7 +31,9 @@ class ColorResource extends Resource
                                     ->autofocus()
                                     ->disableAutocomplete()
                                     ->required()
-                                    ->unique(ignoreRecord: true),
+                                    ->unique(table: Color::class, ignoreRecord: true, callback: function (Unique $rule) {
+                                        return $rule->whereNull('deleted_at');
+                                    }),
                                 Forms\Components\ColorPicker::make('hexa')
                                     ->required(),
                             ])

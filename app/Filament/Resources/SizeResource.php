@@ -9,6 +9,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Illuminate\Validation\Rules\Unique;
 
 class SizeResource extends Resource
 {
@@ -30,7 +31,9 @@ class SizeResource extends Resource
                                     ->autofocus()
                                     ->disableAutocomplete()
                                     ->required()
-                                    ->unique(ignoreRecord: true),
+                                    ->unique(table: Size::class, ignoreRecord: true, callback: function (Unique $rule) {
+                                        return $rule->whereNull('deleted_at');
+                                    })
                             ])
                             ->columnSpan(2),
                         Forms\Components\Card::make()

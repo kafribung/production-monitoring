@@ -7,6 +7,7 @@ use App\Models\Custom;
 use Filament\Forms;
 use Filament\Resources\{Form, Resource, Table};
 use Filament\Tables;
+use Illuminate\Validation\Rules\Unique;
 
 class CustomResource extends Resource
 {
@@ -28,7 +29,9 @@ class CustomResource extends Resource
                                     ->autofocus()
                                     ->disableAutocomplete()
                                     ->required()
-                                    ->unique(ignoreRecord: true),
+                                    ->unique(table: Custom::class, ignoreRecord: true, callback: function (Unique $rule) {
+                                        return $rule->whereNull('deleted_at');
+                                    })
                             ])
                             ->columnSpan(2),
                         Forms\Components\Card::make()
