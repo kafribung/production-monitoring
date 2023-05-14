@@ -74,6 +74,6 @@ class ImagesRelationManager extends RelationManager
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->latest('creted_by');
+            ->latest('created_by');
     }
 }
