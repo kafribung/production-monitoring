@@ -14,6 +14,7 @@ class HomeController extends Controller
             'oldestImage:id,images.product_id,name',
             'colors:id,name,hexa'
         )
+            ->whereHas('oldestImage')
             ->limit(10)->get(['id', 'name', 'slug', 'price']);
 
         return Inertia::render('User/Home', compact('products'));

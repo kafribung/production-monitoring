@@ -14,21 +14,24 @@ class DetailController extends Controller
      */
     public function __invoke(Product $product)
     {
-        $product = $product->load([
-            'images:id,images.product_id,name',
-            'colors:id,name,hexa',
-            'colors:id,name,hexa',
-            'materil:id,name',
-            'sizes:id,name',
-            'customs:id,name',
-            'carts' => [
-                'checkout_carts:id,cart_id' => [
-                    'review:id,checkout_cart_id,value,star,created_at,created_by',
-                    'review.user:id,name',
+        $product = $product
+            ->whereHas('images')
+            ->first()
+            ->load([
+                'images:id,images.product_id,name',
+                'colors:id,name,hexa',
+                'colors:id,name,hexa',
+                'materil:id,name',
+                'sizes:id,name',
+                'customs:id,name',
+                'carts' => [
+                    'checkout_carts:id,cart_id' => [
+                        'review:id,checkout_cart_id,value,star,created_at,created_by',
+                        'review.user:id,name',
+                    ]
                 ]
-            ]
-            // 'cart.checkout_cart.review:id,checkout_cart_id,value,star,created_at,created_by'
-        ])
+                // 'cart.checkout_cart.review:id,checkout_cart_id,value,star,created_at,created_by'
+            ])
             ->only([
                 'id',
                 'name',
