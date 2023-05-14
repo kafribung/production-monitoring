@@ -18,7 +18,7 @@ class CategoryController extends Controller
     {
         return inertia('User/Category', [
             'category'  => $category,
-            'products'  => $category->products->whereHas('oldestImage')->first()->load(
+            'products'  => $category->products->load(
                 'oldestImage:id,images.product_id,name',
                 'colors:id,name,hexa'
             ),

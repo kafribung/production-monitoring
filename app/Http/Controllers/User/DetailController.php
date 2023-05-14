@@ -15,8 +15,6 @@ class DetailController extends Controller
     public function __invoke(Product $product)
     {
         $product = $product
-            ->whereHas('images')
-            ->first()
             ->load([
                 'images:id,images.product_id,name',
                 'colors:id,name,hexa',
