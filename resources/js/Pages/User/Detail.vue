@@ -158,9 +158,11 @@ NProgress.done()
                     <form @submit.prevent="submit" class="mt-6">
                         <!-- Colors -->
                         <div>
-                            <h3 class="text-sm text-gray-600">Colors</h3>
+                            <h3 class="after:content-['*'] after:ml-0.5 after:text-red-500 text-sm text-gray-600">Colors
+                            </h3>
                             <RadioGroup v-model="form.color_id" class="mt-2">
-                                <RadioGroupLabel class="sr-only"> Choose a color </RadioGroupLabel>
+                                <RadioGroupLabel class="sr-only"> Choose
+                                    a color </RadioGroupLabel>
                                 <span class="flex items-center space-x-3">
                                     <RadioGroupOption as="template" v-for="color in product.colors" :key="color.id"
                                         :value="color.id" v-slot="{ active, checked }">
@@ -179,7 +181,8 @@ NProgress.done()
 
                         <div class="flex flex-col justify-start">
                             <div class="mt-4 ml-2">
-                                <label for="quantity" class="text-sm block mb-1 text-gray-600 ">Quantity</label>
+                                <label for="quantity"
+                                    class="after:content-['*'] after:ml-0.5 after:text-red-500 text-sm block mb-1 text-gray-600 ">Quantity</label>
                                 <select id="quantity" v-model="form.quantity"
                                     class="rounded-md border min-w-full border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus min-w-full:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
                                     <option v-for="n in 10" :value="n">{{ n }}</option>
@@ -187,7 +190,8 @@ NProgress.done()
                             </div>
 
                             <div class="mt-4 ml-2">
-                                <label for="size" class="text-sm block mb-1 text-gray-600">Size</label>
+                                <label for="size"
+                                    class="after:content-['*'] after:ml-0.5 after:text-red-500 text-sm block mb-1 text-gray-600">Size</label>
                                 <select id="size" v-model="form.size_id"
                                     class="rounded-md border min-w-full border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
                                     <option v-for="size in product.sizes" :key="size.id" :value="size.id">{{
@@ -196,21 +200,26 @@ NProgress.done()
                                 </select>
                             </div>
 
-                            <div class="mt-4 ml-2">
-                                <label for="custom" class="text-sm block mb-1 text-gray-600">Custom</label>
-                                <select id="custom" v-model="form.custom_id"
-                                    class="rounded-md border min-w-full border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
-                                    <option v-for="custom in product.customs" :key="custom.id" :value="custom.id">{{
-                                        custom.name
-                                    }}</option>
-                                </select>
+                            <div v-if="product.customs_count">
+                                <div class=" mt-4 ml-2">
+                                    <label for="custom"
+                                        class="after:content-['*'] after:ml-0.5 after:text-red-500 text-sm block mb-1 text-gray-600">Custom</label>
+                                    <select id="custom" v-model="form.custom_id"
+                                        class="rounded-md border min-w-full border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
+                                        <option v-for="custom in product.customs" :key="custom.id" :value="custom.id">{{
+                                            custom.name
+                                        }}</option>
+                                    </select>
+                                </div>
+
+                                <div class="mt-4 ml-2">
+                                    <label for="note"
+                                        class="after:content-['*'] after:ml-0.5 after:text-red-500 text-sm block mb-1 text-gray-600">Note</label>
+                                    <textarea id="note" v-model="form.note"
+                                        class="rounded-md border min-w-full border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"></textarea>
+                                </div>
                             </div>
 
-                            <div class="mt-4 ml-2">
-                                <label for="note" class="text-sm block mb-1 text-gray-600">Note</label>
-                                <textarea id="note" v-model="form.note"
-                                    class="rounded-md border min-w-full border-gray-300 text-left text-base font-medium text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm"></textarea>
-                            </div>
                         </div>
 
                         <!-- Error messages -->
@@ -218,8 +227,8 @@ NProgress.done()
                         <InputError class="mt-2" :message="form.errors.qunatity" />
                         <div class="sm:flex-col1 mt-10 flex">
                             <button type="submit" :disabled="form.processing"
-                                class="flex max-w-full flex-1 items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full">Add
-                                to bag
+                                class="flex max-w-full flex-1 items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full">
+                                Masukkan Keranjang
                             </button>
                         </div>
                     </form>

@@ -15,6 +15,7 @@ class DetailController extends Controller
     public function __invoke(Product $product)
     {
         $product = $product
+            ->loadCount('customs')
             ->load([
                 'images:id,images.product_id,name',
                 'colors:id,name,hexa',
@@ -42,6 +43,7 @@ class DetailController extends Controller
                 'customs',
                 'stock_first',
                 'carts',
+                'customs_count'
             ]);
         // dd($product['sizes'][0]['id']);
 

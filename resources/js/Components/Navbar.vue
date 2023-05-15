@@ -39,7 +39,6 @@ const categories = computed(() => usePage().props.value.categories)
                             class="inline-flex items-center  px-1 pt-1 text-sm font-medium text-gray-900 capitalize">
                         {{ category.name }}
                         </Link>
-
                     </div>
                 </div>
                 <!-- Cart -->
@@ -50,18 +49,11 @@ const categories = computed(() => usePage().props.value.categories)
         <DisclosurePanel class="sm:hidden">
             <div class="space-y-1 pt-2 pb-4">
                 <!-- Current: "bg-indigo-50 border-indigo-500 text-indigo-700", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" -->
-                <DisclosureButton as="a" href="#"
-                    class="block border-l-4 border-indigo-500 bg-indigo-50 py-2 pl-3 pr-4 text-base font-medium text-indigo-700">
-                    Dashboard</DisclosureButton>
-                <DisclosureButton as="a" href="#"
-                    class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700">
-                    Team</DisclosureButton>
-                <DisclosureButton as="a" href="#"
-                    class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700">
-                    Projects</DisclosureButton>
-                <DisclosureButton as="a" href="#"
-                    class="block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700">
-                    Calendar</DisclosureButton>
+                <Link v-for="category in categories" :key="category.id" :href="route('category.index', category)"
+                    :class="{ 'border-b-2 border-indigo-500': $page.url === '/category/' + category.name }"
+                    class="block border-l-4 border-indigo-500 bg-indigo-50 py-2 pl-3 pr-4 text-base font-medium text-indigo-700 capitalize">
+                {{ category.name }}
+                </Link>
             </div>
         </DisclosurePanel>
     </Disclosure>

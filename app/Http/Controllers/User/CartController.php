@@ -30,8 +30,9 @@ class CartController extends Controller
 
         $product = Product::find($data['product_id'], ['id', 'slug', 'price']);
 
-        // Set Price
-        $data['price'] = $product->price * $data['quantity'];
+        // Set Price & total
+        $data['price'] = $product->price;
+        $data['sub_total'] = $product->price * $data['quantity'];
 
         // Check cart
         // $cart = Cart::where(function ($q) use ($data) {

@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class () extends Migration {
+return new class() extends Migration
+{
     /**
      * Run the migrations.
      *
@@ -28,6 +29,7 @@ return new class () extends Migration {
                 ->cascadeOnUpdate();
             $table->smallInteger('quantity');
             $table->integer('price');
+            $table->integer('sub_total')->nullable();
             $table->boolean('status')->default(false);
             $table->foreignId('custom_id')
                 ->nullable()
