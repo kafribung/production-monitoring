@@ -173,10 +173,10 @@ class ProductResource extends Resource
         ];
     }
 
-    // protected static function getNavigationBadge(): ?string
-    // {
-    //     return static::getModel()::count();
-    // }
+    protected static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 
 
     // public static function getEloquentQuery(): Builder

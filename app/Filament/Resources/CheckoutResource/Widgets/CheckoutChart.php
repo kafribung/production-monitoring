@@ -6,14 +6,14 @@ use Filament\Widgets\BarChartWidget;
 
 class CheckoutChart extends BarChartWidget
 {
-    protected static ?string $heading = 'Chart';
+    protected static ?string $heading = 'Grafik Penjualan';
 
     protected function getData(): array
     {
         return [
             'datasets' => [
                 [
-                    'label' => 'Blog posts created',
+                    'label' => 'Penjualan',
                     'data' => [0, 10, 5, 2, 21, 32, 45, 74, 65, 45, 77, 89],
                 ],
             ],

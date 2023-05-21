@@ -20,8 +20,15 @@ class ListCheckouts extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            CheckoutResource\Widgets\OrderOverview::class,
             CheckoutResource\Widgets\CheckoutChart::class,
+        ];
+    }
+
+    protected function getHeaderWidgetsColumns(): int | array
+    {
+        return [
+            'sm' => 1,
+            'xl' => 2,
         ];
     }
 }
