@@ -75,7 +75,7 @@ class CheckoutResource extends Resource
 
                         foreach ($record->checkoutCarts as $checkout_cart) {
                             array_push($data['checkout_carts'], [
-                                'product_name' =>  $checkout_cart->cartProduct->name,
+                                'product_name' =>  $checkout_cart->cart->product->name,
                                 'color' =>  $checkout_cart->cart->color->hexa,
                                 'size' =>  $checkout_cart->cart->size->name,
                                 'price' =>  $checkout_cart->cart->price,

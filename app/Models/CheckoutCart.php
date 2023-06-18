@@ -30,18 +30,6 @@ class CheckoutCart extends Model
         return $this->belongsTo(Cart::class);
     }
 
-    public function cartProduct()
-    {
-        return $this->hasOneThrough(
-            Product::class,
-            Cart::class,
-            'product_id',
-            'id',
-            'cart_id',
-            'id',
-        );
-    }
-
     public function review()
     {
         return $this->hasOne(Review::class);
