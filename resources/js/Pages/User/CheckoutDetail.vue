@@ -109,13 +109,14 @@ async function submit(checkout) {
     }
 
     try {
-        const response = await axios.post('http://127.0.0.1:8000/api/midtrans', data, headers)
+        const response = await axios.post(`${location.origin}/api/midtrans`, data, headers)
 
         if (response.data.data.token) {
             window.snap.pay(response.data.data.token, {
                 onSuccess: function (result) {
                     /* You may add your own implementation here */
                     alert("payment success!"); console.log(result);
+                    return axios.post(`${location.origin}/api/status`, data, headers)
                 },
                 onPending: function (result) {
                     /* You may add your own implementation here */

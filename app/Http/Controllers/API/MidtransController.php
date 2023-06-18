@@ -48,77 +48,79 @@ class MidtransController extends Controller
         $fraud        = $transaction_status->fraud_status;
         $message      = 'ok';
 
-        if ($transaction == 'capture') {
-            // For credit card transaction, we need to check whether transaction is challenge by FDS or not
-            if ($type == 'credit_card') {
-                if ($fraud == 'challenge') {
-                    // TODO set payment status in merchant's database to 'Challenge by FDS'
-                    // TODO merchant should decide whether this transaction is authorized or not in MAP
-                    $message = "Transaction order_id: " . $order_id . " is challenged by FDS";
-                } else {
-                    // TODO set payment status in merchant's database to 'Success'
-                    $message = "Transaction order_id: " . $order_id . " successfully captured using " . $type;
-                    // Update checkouts table
-                    $checkout->update([
-                        'status' => 'success'
-                    ]);
-                    // Update product
-                    $this->updateStockLastProduct($checkout);
+        if ($checkout->status != 'success') {
+            if ($transaction == 'capture') {
+                // For credit card transaction, we need to check whether transaction is challenge by FDS or not
+                if ($type == 'credit_card') {
+                    if ($fraud == 'challenge') {
+                        // TODO set payment status in merchant's database to 'Challenge by FDS'
+                        // TODO merchant should decide whether this transaction is authorized or not in MAP
+                        $message = "Transaction order_id: " . $order_id . " is challenged by FDS";
+                    } else {
+                        // TODO set payment status in merchant's database to 'Success'
+                        $message = "Transaction order_id: " . $order_id . " successfully captured using " . $type;
+                        // Update checkouts table
+                        $checkout->update([
+                            'status' => 'success'
+                        ]);
+                        // Update product
+                        $this->updateStockLastProduct($checkout);
+                    }
                 }
+            } elseif ($transaction == 'settlement') {
+                // TODO set payment status in merchant's database to 'Settlement'
+                $message = "Transaction order_id: " . $order_id . " successfully transfered using " . $type;
+                // Update checkouts table
+                $checkout->update([
+                    'status' => 'success'
+                ]);
+                // Update product
+                $this->updateStockLastProduct($checkout);
+            } elseif ($transaction == 'pending') {
+                // TODO set payment status in merchant's database to 'Pending'
+                $message = "Waiting customer to finish transaction order_id: " . $order_id . " using " . $type;
+            } elseif ($transaction == 'deny') {
+                // TODO set payment status in merchant's database to 'Denied'
+                $message = "Payment using " . $type . " for transaction order_id: " . $order_id . " is denied.";
+
+                // Delete checkout
+                $this->delete($checkout);
+            } elseif ($transaction == 'expire') {
+                // TODO set payment status in merchant's database to 'expire'
+                $message = "Payment using " . $type . " for transaction order_id: " . $order_id . " is expired.";
+
+                // Delete checkout
+                $this->delete($checkout);
+            } elseif ($transaction == 'cancel') {
+                // TODO set payment status in merchant's database to 'Denied'
+                $message = "Payment using " . $type . " for transaction order_id: " . $order_id . " is canceled.";
+
+                // Delete checkout
+                $this->delete($checkout);
+            } elseif ($transaction == null) {
+                $snap_token = $midtransClient->snap()->create(new \Sawirricardo\Midtrans\Dto\TransactionDto($request->all()));
+
+                return response([
+                    'data' => [
+                        'token'  => $snap_token->token,
+                        'redirect_url' => $snap_token->redirect_url,
+                        'message' => $message
+                    ]
+                ]);
             }
-        } elseif ($transaction == 'settlement') {
-            // TODO set payment status in merchant's database to 'Settlement'
-            $message = "Transaction order_id: " . $order_id . " successfully transfered using " . $type;
-            // Update checkouts table
-            $checkout->update([
-                'status' => 'success'
-            ]);
-            // Update product
-            $this->updateStockLastProduct($checkout);
-        } elseif ($transaction == 'pending') {
-            // TODO set payment status in merchant's database to 'Pending'
-            $message = "Waiting customer to finish transaction order_id: " . $order_id . " using " . $type;
-        } elseif ($transaction == 'deny') {
-            // TODO set payment status in merchant's database to 'Denied'
-            $message = "Payment using " . $type . " for transaction order_id: " . $order_id . " is denied.";
-
-            // Delete checkout
-            $this->delete($checkout);
-        } elseif ($transaction == 'expire') {
-            // TODO set payment status in merchant's database to 'expire'
-            $message = "Payment using " . $type . " for transaction order_id: " . $order_id . " is expired.";
-
-            // Delete checkout
-            $this->delete($checkout);
-        } elseif ($transaction == 'cancel') {
-            // TODO set payment status in merchant's database to 'Denied'
-            $message = "Payment using " . $type . " for transaction order_id: " . $order_id . " is canceled.";
-
-            // Delete checkout
-            $this->delete($checkout);
-        } elseif ($transaction == null) {
-            $snap_token = $midtransClient->snap()->create(new \Sawirricardo\Midtrans\Dto\TransactionDto($request->all()));
 
             return response([
                 'data' => [
-                    'token'  => $snap_token->token,
-                    'redirect_url' => $snap_token->redirect_url,
-                    'message' => $message
+                    'message'            => $message,
+                    'order_id'           => $order_id,
+                    'gross_amount'       => $transaction_status->gross_amount,
+                    'va_numbers'         => $transaction_status->va_numbers,
+                    'transaction_time'   => $transaction_status->transaction_time,
+                    'expiry_time'        => $transaction_status->expiry_time,
+                    'transaction_status' => $transaction_status->transaction_status,
                 ]
             ]);
         }
-
-        return response([
-            'data' => [
-                'message'            => $message,
-                'order_id'           => $order_id,
-                'gross_amount'       => $transaction_status->gross_amount,
-                'va_numbers'         => $transaction_status->va_numbers,
-                'transaction_time'   => $transaction_status->transaction_time,
-                'expiry_time'        => $transaction_status->expiry_time,
-                'transaction_status' => $transaction_status->transaction_status,
-            ]
-        ]);
     }
 
     /**
@@ -152,7 +154,6 @@ class MidtransController extends Controller
 
         // Get checkout
         $checkout = Checkout::where('order_number', $checkout_order_id)->first();
-
         // Get status API Midtrans
         $transaction_status  = $midtransClient->payment()->status($checkout_order_id);
 
@@ -160,38 +161,42 @@ class MidtransController extends Controller
         $type         = $transaction_status->payment_type;
         $fraud        = $transaction_status->fraud_status;
 
-        if ($transaction == 'capture') {
-            // For credit card transaction, we need to check whether transaction is challenge by FDS or not
-            if ($type == 'credit_card') {
-                if ($fraud != 'challenge') {
-                    // Update checkouts table
-                    $checkout->update([
-                        'status' => 'success'
-                    ]);
-                    // Update product
-                    $this->updateStockLastProduct($checkout);
+        // If not checkout
+        if ($checkout->status != 'success') {
+            if ($transaction == 'capture') {
+                // For credit card transaction, we need to check whether transaction is challenge by FDS or not
+                if ($type == 'credit_card') {
+                    if ($fraud != 'challenge') {
+                        // Update checkouts table
+                        $checkout->update([
+                            'status' => 'success'
+                        ]);
+                        // Update product
+                        $this->updateStockLastProduct($checkout);
+                    }
                 }
+            } elseif ($transaction == 'settlement') {
+                // Update checkouts table
+                $checkout->update([
+                    'status' => 'success'
+                ]);
+                // Update product
+                $this->updateStockLastProduct($checkout);
+            } elseif ($transaction == 'pending') {
+                $checkout->update([
+                    'status' => 'pending'
+                ]);
+            } elseif ($transaction == 'deny') {
+                // Delete checkout
+                $this->delete($checkout);
+            } elseif ($transaction == 'expire') {
+                // Delete checkout
+                $this->delete($checkout);
+            } elseif ($transaction == 'cancel') {
+                $this->delete($checkout);
             }
-        } elseif ($transaction == 'settlement') {
-            // Update checkouts table
-            $checkout->update([
-                'status' => 'success'
-            ]);
-            // Update product
-            $this->updateStockLastProduct($checkout);
-        } elseif ($transaction == 'pending') {
-            $checkout->update([
-                'status' => 'pending'
-            ]);
-        } elseif ($transaction == 'deny') {
-            // Delete checkout
-            $this->delete($checkout);
-        } elseif ($transaction == 'expire') {
-            // Delete checkout
-            $this->delete($checkout);
-        } elseif ($transaction == 'cancel') {
-            $this->delete($checkout);
         }
+
 
         return;
     }
@@ -221,8 +226,8 @@ class MidtransController extends Controller
     public function updateStockLastProduct($checkout)
     {
         $checkout->checkoutCarts->each(function ($checkout_cart) {
-            $checkout_cart->cartProduct->update([
-                'stock_last' =>  $checkout_cart->cartProduct->stock_last ? $checkout_cart->cartProduct->stock_last + $checkout_cart->cart->quantity : $checkout_cart->cart->quantity
+            $checkout_cart->cart->product->update([
+                'stock_last' =>  $checkout_cart->cart->product->stock_last ? $checkout_cart->cart->product->stock_last + $checkout_cart->cart->quantity : $checkout_cart->cart->quantity
             ]);
         });
     }
