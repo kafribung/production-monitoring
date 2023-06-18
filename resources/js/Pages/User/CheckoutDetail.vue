@@ -116,7 +116,9 @@ async function submit(checkout) {
                 onSuccess: function (result) {
                     /* You may add your own implementation here */
                     alert("payment success!"); console.log(result);
-                    return axios.post(`${location.origin}/api/status`, data, headers)
+                    // Update otomatis status checkout
+                    axios.post(`${location.origin}/api/status`, data, headers)
+                    return location.reload()
                 },
                 onPending: function (result) {
                     /* You may add your own implementation here */
