@@ -8,6 +8,7 @@ use App\Models\Product;
 use Filament\Resources\{Form, Resource, Table};
 use Filament\{Forms, Tables};
 use Filament\Forms\Components\Actions\Action;
+use Filament\Tables\Filters\SelectFilter;
 
 class CheckoutResource extends Resource
 {
@@ -64,12 +65,18 @@ class CheckoutResource extends Resource
                     ->sortable()
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->options([
+                        'success' => 'Success',
+                        'pending' => 'Pending',
+                        'deny'    => 'Deny',
+                        'expire'  => 'Expire',
+                        'cancel'  => 'Cancel',
+                    ])
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
                     ->mutateRecordDataUsing(function (array $data, Checkout $record): array {
-                        // dd($record);
                         $data['user_id'] = auth()->id();
                         $data['checkout_carts'] = [];
 
