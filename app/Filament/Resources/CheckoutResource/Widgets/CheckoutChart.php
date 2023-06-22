@@ -3,12 +3,25 @@
 namespace App\Filament\Resources\CheckoutResource\Widgets;
 
 use App\Models\Checkout;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\TextInput;
 use Filament\Widgets\BarChartWidget;
 use Illuminate\Support\Facades\DB;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
 class CheckoutChart extends ApexChartWidget
 {
+    protected function getFormSchema(): array
+    {
+        return [
+            DatePicker::make('date_start')
+                ->default(now()),
+
+            DatePicker::make('date_end')
+                ->default('2023-12-31')
+
+        ];
+    }
     // protected static ?string $heading = 'Grafik Penjualan';
 
     // protected function getData(): array
@@ -29,7 +42,7 @@ class CheckoutChart extends ApexChartWidget
      *
      * @var string
      */
-    protected static string $chartId = 'GrafikPenjualan';
+    protected static string $chartId = 'grafikPenjualan';
 
     /**
      * Widget Title
@@ -67,11 +80,11 @@ class CheckoutChart extends ApexChartWidget
         return [
             'chart' => [
                 'type' => 'bar',
-                'height' => 300,
+                'height' => 250,
             ],
             'series' => [
                 [
-                    'name' => 'BlogPostsChart',
+                    'name' => 'Grafik Penjualan',
                     'data' => $sale_count,
                 ],
             ],
@@ -79,7 +92,7 @@ class CheckoutChart extends ApexChartWidget
                 'categories' => $month_names,
                 'labels' => [
                     'style' => [
-                        'colors' => '#fff',
+                        'colors' => '#9ca3af',
                         'fontWeight' => 600,
                     ],
                 ],
@@ -92,7 +105,7 @@ class CheckoutChart extends ApexChartWidget
                     ],
                 ],
             ],
-            'colors' => ['#6366f1'],
+            'colors' => ['#F59E0B'],
         ];
     }
 }
