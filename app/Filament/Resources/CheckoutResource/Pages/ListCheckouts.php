@@ -22,6 +22,7 @@ class ListCheckouts extends ListRecords
     {
         return [
             CheckoutResource\Widgets\CheckoutChart::class,
+            CheckoutResource\Widgets\SubtotalCheckoutChart::class,
             ProductChart::class,
         ];
     }
