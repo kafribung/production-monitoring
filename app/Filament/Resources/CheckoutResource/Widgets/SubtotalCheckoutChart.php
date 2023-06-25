@@ -14,14 +14,14 @@ class SubtotalCheckoutChart extends ApexChartWidget
      *
      * @var string
      */
-    protected static string $chartId = 'sap';
+    protected static string $chartId = 'Total';
 
     /**
      * Widget Title
      *
      * @var string|null
      */
-    protected static ?string $heading = 'sap';
+    protected static ?string $heading = 'Total Pendapatan';
 
     protected function getFormSchema(): array
     {
