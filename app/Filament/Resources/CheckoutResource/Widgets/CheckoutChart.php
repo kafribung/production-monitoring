@@ -4,39 +4,14 @@ namespace App\Filament\Resources\CheckoutResource\Widgets;
 
 use App\Models\Checkout;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\TextInput;
-use Filament\Widgets\BarChartWidget;
+use Filament\Forms\Components\Select;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
 class CheckoutChart extends ApexChartWidget
 {
-    protected function getFormSchema(): array
-    {
-        return [
-            DatePicker::make('date_start')
-                ->default(now()),
-
-            DatePicker::make('date_end')
-                ->default('2023-12-31')
-
-        ];
-    }
-    // protected static ?string $heading = 'Grafik Penjualan';
-
-    // protected function getData(): array
-    // {
-    //     return [
-    //         'datasets' => [
-    //             [
-    //                 'label' => 'Penjualan',
-    //                 'data' => [0, 10, 5, 2, 21, 32, 45, 74, 65, 45, 77, 89],
-    //             ],
-    //         ],
-    //         'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    //     ];
-    // }
-
     /**
      * Chart Id
      *
@@ -51,6 +26,25 @@ class CheckoutChart extends ApexChartWidget
      */
     protected static ?string $heading = 'Grafik Penjualan';
 
+    protected function getFormSchema(): array
+    {
+        return [
+            Select::make('status')
+                ->options([
+                    'success' => 'Success',
+                    'pending' => 'Pending',
+                    'deny'    => 'Deny',
+                    'expire'  => 'Expire',
+                    'cancel'  => 'Cancel',
+                ]),
+            DatePicker::make('date_start')
+                ->default(Carbon::now()->startOfYear()),
+            DatePicker::make('date_end')
+                ->default(Carbon::now()->endOfYear())
+
+        ];
+    }
+
     /**
      * Chart options (series, labels, types, size, animations...)
      * https://apexcharts.com/docs/options
@@ -61,12 +55,25 @@ class CheckoutChart extends ApexChartWidget
     {
         $month_names = [];
         $sale_count  = [];
+
+        // Filter
+        $status     = $this->filterFormData['status'];
+        $date_start = $this->filterFormData['date_start'];
+        $date_end   = $this->filterFormData['date_end'];
+        // End Filter
+
         $datas = Checkout::select(
             DB::raw('year(created_at) as year'),
             DB::raw('month(created_at) as month'),
             DB::raw('MONTHNAME(created_at) as month_name'),
             DB::raw('count(id) as count'),
         )
+            ->when($status, function (Builder $query) use ($status) {
+                $query->where('status', $status);
+            })
+            ->when($date_start && $date_end, function (Builder $query) use ($date_start, $date_end) {
+                $query->whereBetween('created_at', [$date_start, $date_end]);
+            })
             ->groupBy(['year', 'month', 'month_name'])
             ->orderBy('month', 'asc')
             ->get();
@@ -80,7 +87,7 @@ class CheckoutChart extends ApexChartWidget
         return [
             'chart' => [
                 'type' => 'bar',
-                'height' => 250,
+                'height' => 300,
             ],
             'series' => [
                 [

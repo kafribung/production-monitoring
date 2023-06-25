@@ -146,6 +146,7 @@ return [
             // Library
             \Awcodes\Overlook\Overlook::class,
             \App\Filament\Resources\CheckoutResource\Widgets\CheckoutChart::class,
+            \App\Filament\Resources\ProductResource\Widgets\ProductChart::class,
             // \CheckoutResource\Widgets\CheckoutChart::class,
         ],
     ],

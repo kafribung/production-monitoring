@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\CheckoutResource\Pages;
 
 use App\Filament\Resources\CheckoutResource;
+use App\Filament\Resources\ProductResource\Widgets\ProductChart;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
 
@@ -21,6 +22,7 @@ class ListCheckouts extends ListRecords
     {
         return [
             CheckoutResource\Widgets\CheckoutChart::class,
+            ProductChart::class,
         ];
     }
 
